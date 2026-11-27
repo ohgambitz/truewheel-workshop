@@ -24,10 +24,16 @@ export function initCraftChapter(root) {
     activate(steps[0]);
 }
 export function initHeaderState(header, hero) {
-    if (!hero || !("IntersectionObserver" in window)) {
+    const after = hero?.nextElementSibling;
+    if (!after) {
         header.dataset.over = "false";
         return;
     }
-    const io = new IntersectionObserver(([e]) => { header.dataset.over = String(e.isIntersecting); }, { rootMargin: "-68px 0px 0px 0px" });
-    io.observe(hero);
+    let ticking = false;
+    const update = () => { ticking = false; header.dataset.over = String(after.getBoundingClientRect().top > header.offsetHeight); };
+    window.addEventListener("scroll", () => { if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+    } }, { passive: true });
+    update();
 }

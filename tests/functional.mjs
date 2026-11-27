@@ -48,6 +48,7 @@ try {
   check("tension chart knocks out, trues spoke by spoke and announces once", knocked > 5 && spread <= 3 && announced.startsWith("Trued."), `${knocked}% -> ${spread}%, "${announced}"`);
 
   // Header state
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" })); await page.waitForTimeout(300);
   check("header is transparent over the hero at the top", (await page.getAttribute("[data-site-header]", "data-over")) === "true");
 
   // Craft chapter: pinned stage follows the active step

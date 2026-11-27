@@ -1,4 +1,5 @@
 import { initBooking } from "./booking.js";
+import { initCine } from "./cine.js";
 import { initCraftChapter, initHeaderState } from "./chapters.js";
 import { initConfigurator } from "./configurator.js";
 import { initNav } from "./nav.js";
@@ -15,6 +16,10 @@ const idle = (fn: () => void): void => {
   if (ric) ric(fn, { timeout: 1500 }); else window.setTimeout(fn, 200);
 };
 const afterLoad = (fn: () => void): void => { if (document.readyState === "complete") idle(fn); else window.addEventListener("load", () => idle(fn), { once: true }); };
+
+// The hero sequence starts after the page has loaded, so its frames never compete with the first paint.
+const cine = document.querySelector<HTMLElement>("[data-cine]");
+if (cine) afterLoad(() => initCine(cine));
 
 const chart = document.querySelector<HTMLElement>("[data-tension-chart]");
 if (chart) afterLoad(() => initTensionChart(chart));

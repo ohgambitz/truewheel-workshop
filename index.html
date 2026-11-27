@@ -20,7 +20,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="assets/fonts/big-shoulders-display-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/instrument-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" as="image" href="assets/img/studio/wheel-carbon-28-1100.webp" imagesrcset="assets/img/studio/wheel-carbon-28-600.webp 600w, assets/img/studio/wheel-carbon-28-800.webp 800w, assets/img/studio/wheel-carbon-28-1100.webp 1100w, assets/img/studio/wheel-carbon-28-1400.webp 1400w" imagesizes="(max-width: 600px) 78vw, (max-width: 1000px) 92vw, 760px" fetchpriority="high">
+<link rel="preload" as="image" href="assets/img/hero/wheel-hero-1100.webp" imagesrcset="assets/img/hero/wheel-hero-600.webp 600w, assets/img/hero/wheel-hero-800.webp 800w, assets/img/hero/wheel-hero-1100.webp 1100w, assets/img/hero/wheel-hero-1400.webp 1400w" imagesizes="(max-width: 700px) 112vw, 60vw" fetchpriority="high">
 <link rel="stylesheet" href="assets/css/site.css">
 <script type="module" src="assets/js/main.js"></script>
 <script type="application/ld+json">
@@ -56,32 +56,32 @@
 </header>
 
 <main id="main">
-  <section class="hero" id="top" data-hero aria-labelledby="hero-title">
-    <div class="wrap hero-grid">
-      <div class="hero-copy">
-        <h1 id="hero-title">Every spoke, <em>even.</em></h1>
-        <p class="lede">Bicycle wheels laced and trued by hand, each spoke brought to the same tension so the wheel stays straight for years. Then we tune the rest of the bike around it.</p>
+  <section class="hero cine" id="top" data-hero data-cine aria-labelledby="hero-title">
+    <div class="cine-stage">
+      <p class="cine-index mono" aria-hidden="true"><span>TW—01</span><span data-cine-count>Assembled</span></p>
+      <h1 id="hero-title" class="cine-title"><span class="ln">Every</span> <span class="ln">spoke,</span> <span class="ln"><em>even.</em></span></h1>
+      <div class="cine-media" data-bleed>
+        <img class="hero-wheel" src="assets/img/hero/wheel-hero-1100.webp" srcset="assets/img/hero/wheel-hero-600.webp 600w, assets/img/hero/wheel-hero-800.webp 800w, assets/img/hero/wheel-hero-1100.webp 1100w, assets/img/hero/wheel-hero-1400.webp 1400w" sizes="(max-width: 700px) 112vw, 60vw" width="1400" height="1400" alt="A hand-built road wheel: carbon rims with a TRUEWHEEL decal, tan-wall tyre, 28 spokes and brass nipples." fetchpriority="high">
+        <canvas data-cine-canvas aria-hidden="true"></canvas>
+        <ol class="cine-parts" aria-label="Parts of the wheel">
+          <li data-part data-x="7" data-y="45" data-flip><b>Tyre</b><span>30 mm tan wall</span></li>
+          <li data-part data-x="78" data-y="30"><b>Spokes</b><span>28 per wheel, hand laced</span></li>
+          <li data-part data-x="74" data-y="46"><b>Hub</b><span>Star ratchet, sealed bearings</span></li>
+          <li data-part data-x="73" data-y="62"><b>Nipples</b><span>56, brass alloy</span></li>
+          <li data-part data-x="27" data-y="62" data-flip><b>Rim</b><span>Carbon, 30 mm deep</span></li>
+        </ol>
+      </div>
+      <div class="cine-foot">
+        <p class="lede">Bicycle wheels laced and trued by hand, every spoke brought to the same tension so the wheel stays straight for years.</p>
         <div class="cta">
           <a class="btn btn-brass" href="#book">Book a service</a>
-          <a class="text-link" href="#builder">Build a wheelset online</a>
+          <a class="text-link" href="#builder">Build a wheelset</a>
         </div>
-        <dl class="hero-facts">
-          <div><dt>0.2 mm</dt><dd>max wobble</dd></div>
-          <div><dt>$65</dt><dd>safety check</dd></div>
-          <div><dt>12 months</dt><dd>free re-true</dd></div>
-        </dl>
       </div>
-      <div class="hero-stage">
-        <img class="hero-wheel" data-bleed src="assets/img/studio/wheel-carbon-28-1100.webp" srcset="assets/img/studio/wheel-carbon-28-600.webp 600w, assets/img/studio/wheel-carbon-28-800.webp 800w, assets/img/studio/wheel-carbon-28-1100.webp 1100w, assets/img/studio/wheel-carbon-28-1400.webp 1400w" sizes="(max-width: 600px) 78vw, (max-width: 1000px) 92vw, 760px" width="1400" height="1400" alt="A hand-built road wheel with 30 mm carbon rims and 28 bladed spokes." fetchpriority="high">
-        <figure class="instrument" data-tension-chart>
-          <div class="inst-head"><span>Spoke tension, 32 spokes</span><span class="inst-read"><b data-spread-value>2%</b></span></div>
-          <canvas width="300" height="300" role="img" aria-label="Spoke tension chart for a 32-spoke wheel. The tensions start uneven and settle into an even ring as the wheel is trued."></canvas>
-          <div class="inst-foot"><span class="inst-label" data-spread-label>tension spread after truing</span><button class="btn btn-line" type="button" data-knock>Knock it out of true</button></div>
-          <p class="visually-hidden" aria-live="polite" data-spread-live></p>
-          <figcaption class="visually-hidden">How we read a wheel on the truing stand: each line is one spoke and the dashed ring is the target tension.</figcaption>
-        </figure>
-        <p class="render-note">Product images are renders.</p>
-      </div>
+      <ol class="cine-legend mono" aria-hidden="true"><li>Tyre</li><li>Spokes</li><li>Hub</li><li>Nipples</li><li>Rim</li></ol>
+      <p class="cine-outro" aria-hidden="true"><span>Taken apart.</span> <span>Built back by hand.</span></p>
+      <p class="cine-hint mono" aria-hidden="true"><i></i>Scroll to take it apart</p>
+      <p class="render-note">Fictional studio. Product images are renders.</p>
     </div>
   </section>
 
@@ -98,6 +98,13 @@
           <h2 id="craft-title">What “true” means here</h2>
           <p>Every wheel leaves with a build card. These are the numbers we hold it to, checked spoke by spoke on the stand.</p>
         </div>
+        <figure class="instrument" data-tension-chart>
+          <div class="inst-head"><span>Spoke tension, 32 spokes</span><span class="inst-read"><b data-spread-value>2%</b></span></div>
+          <canvas width="300" height="300" role="img" aria-label="Spoke tension chart for a 32-spoke wheel. The tensions start uneven and settle into an even ring as the wheel is trued."></canvas>
+          <div class="inst-foot"><span class="inst-label" data-spread-label>tension spread after truing</span><button class="btn btn-line" type="button" data-knock>Knock it out of true</button></div>
+          <p class="visually-hidden" aria-live="polite" data-spread-live></p>
+          <figcaption class="visually-hidden">How we read a wheel on the truing stand: each line is one spoke and the dashed ring is the target tension.</figcaption>
+        </figure>
         <article class="step" data-step data-frame="hub" data-label="Spoke tension spread" data-value="within 5%">
           <div class="step-media"><img src="assets/img/studio/macro-hub-700.webp" width="700" height="700" alt="Close-up of a hub flange with spokes laced through it." loading="lazy" decoding="async"></div>
           <h3>Even tension</h3><p class="measure">within 5%</p>
@@ -295,7 +302,8 @@
       <div class="f-hours"><span class="f-label">Opening hours</span><p>Tue to Fri, 8:00 am to 6:30 pm<br>Sat, 9:00 am to 4:00 pm<br>Sun and Mon, closed</p></div>
       <div class="f-links"><span class="f-label">Get started</span><a href="#book">Request a drop-off</a><a href="#builder">Build a wheelset</a><a href="#services">See prices</a></div>
     </div>
-    <p class="f-base">Sample business site: the name, prices and hours are illustrative, and product images are renders. &copy; <span data-year>2026</span> Truewheel Workshop.</p>
+    <p class="f-giant" aria-hidden="true">Truewheel</p>
+    <p class="f-base">Truewheel Workshop is a fictional brand, designed as a showcase: the name, prices and hours are invented, and product images are 3D renders. &copy; <span data-year>2026</span> Truewheel Workshop.</p>
   </div>
 </footer>
 

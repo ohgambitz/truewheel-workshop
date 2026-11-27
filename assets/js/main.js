@@ -1,4 +1,5 @@
 import { initBooking } from "./booking.js";
+import { initCine } from "./cine.js";
 import { initCraftChapter, initHeaderState } from "./chapters.js";
 import { initConfigurator } from "./configurator.js";
 import { initNav } from "./nav.js";
@@ -21,6 +22,9 @@ const afterLoad = (fn) => { if (document.readyState === "complete")
     idle(fn);
 else
     window.addEventListener("load", () => idle(fn), { once: true }); };
+const cine = document.querySelector("[data-cine]");
+if (cine)
+    afterLoad(() => initCine(cine));
 const chart = document.querySelector("[data-tension-chart]");
 if (chart)
     afterLoad(() => initTensionChart(chart));

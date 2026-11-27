@@ -26,7 +26,12 @@ export function initCraftChapter(root: HTMLElement): void {
 
 /** Header: transparent over the dark hero, solid once the hero has scrolled away. */
 export function initHeaderState(header: HTMLElement, hero: HTMLElement | null): void {
-  if (!hero || !("IntersectionObserver" in window)) { header.dataset.over = "false"; return; }
-  const io = new IntersectionObserver(([e]) => { header.dataset.over = String(e.isIntersecting); }, { rootMargin: "-68px 0px 0px 0px" });
-  io.observe(hero);
+  // The header stays transparent while the dark hero is behind it. The next section rises over the
+  // pinned hero, so the switch follows that section's top edge rather than the hero's visibility.
+  const after = hero?.nextElementSibling;
+  if (!after) { header.dataset.over = "false"; return; }
+  let ticking = false;
+  const update = () => { ticking = false; header.dataset.over = String(after.getBoundingClientRect().top > header.offsetHeight); };
+  window.addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+  update();
 }

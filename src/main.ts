@@ -27,6 +27,7 @@ idle(() => {
   const booking = form ? initBooking(form) : null;
   if (builder) initConfigurator(builder, q => booking?.prefillBuild(q));
   initReveal([".sec-head", ".svc", ".build-steps fieldset", ".quote", ".card-rows li", ".bk", ".faq-head", ".faq details", "footer .fgrid > *"]);
+  initReveal([".craft-stage", ".build-stage .preview", ".step-media"], "product");
 });
 
 const year = document.querySelector("[data-year]");

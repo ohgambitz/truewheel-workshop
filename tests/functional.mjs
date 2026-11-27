@@ -90,6 +90,43 @@ try {
   const svcChecked = await page.isChecked("#svc-build"), notes = await page.inputValue("#bNotes");
   check("Book this build prefills the form", svcChecked && notes.includes("Carbon rims") && notes.includes("Chris King"), notes);
 
+  // Compatibility rules: the part picked last wins; anything it conflicts with changes, with the reason shown beside the step.
+  const pickOpt = id => page.click(`label[for='${id}']`);
+  const on = id => page.isChecked(`#${id}`);
+  const d29 = await page.textContent("#opt-size-29-d"); // build is 700c, Carbon, Chris King R45, 32 here
+  await pickOpt("opt-size-29");
+  const notice1 = await page.textContent(".compat");
+  check("29 inch with a road hub swaps the hub and says why", (await on("opt-hub-dt-350")) && d29.includes("sets DT Swiss 350") && notice1.includes("Chris King R45 is a road hub"), `option said "${d29}"; notice "${notice1}"`);
+  await pickOpt("opt-hub-shimano-105");
+  check("Shimano 105 hubs bring the build back to a road size with 32 spokes", (await on("opt-size-700c")) && (await on("opt-spokes-32")), await page.textContent(".compat"));
+  await pickOpt("opt-spokes-24");
+  check("then picking 24 spokes changes the hubs instead", (await on("opt-hub-dt-350")) && (await page.textContent(".compat")).includes("32 spokes"), await page.textContent(".compat"));
+  // Every option's stated price difference must match what choosing it does to the total.
+  const mismatches = [];
+  for (const id of ["opt-size-650b", "opt-size-29", "opt-rim-carbon-aero", "opt-hub-ck-r45", "opt-spokes-32", "opt-hub-shimano-105", "opt-size-29", "opt-rim-alloy", "opt-spokes-28"]) {
+    const before = parseInt((await total()).replace(/\D/g, ""));
+    const said = await page.textContent(`#${id}-d`);
+    const m = said.match(/([+−])\$([\d,]+)/);
+    const expected = said.startsWith("Same price") || said === "Selected" ? 0 : m ? (m[1] === "+" ? 1 : -1) * parseInt(m[2].replace(/,/g, "")) : NaN;
+    await pickOpt(id);
+    const after = parseInt((await total()).replace(/\D/g, ""));
+    if (after - before !== expected) mismatches.push(`${id}: said "${said}", total ${before} -> ${after}`);
+  }
+  check("every option's stated difference matches the real change, including parts it swaps", mismatches.length === 0, mismatches.join("; ") || "9 options checked");
+  await pickOpt("opt-rim-carbon-aero");
+  const prof = await page.evaluate(() => [document.querySelector("[data-profile-depth]").textContent, document.querySelector("[data-profile-bsd]").textContent, document.querySelector("[data-profile-body]").style.transform]);
+  check("the rim profile redraws to the chosen depth", prof[0] === "45 mm" && prof[1] === "622 mm" && /^scaleY\(1(\.0+)?\)$/.test(prof[2]), prof.join(", "));
+  // Downloadable spec: a real PDF whose text matches the build on screen.
+  const [dl] = await Promise.all([page.waitForEvent("download", { timeout: 10000 }), page.click("[data-download-spec]")]);
+  const { tmpdir } = await import("node:os"); const { readFileSync } = await import("node:fs"); const { execFileSync } = await import("node:child_process");
+  const pdfPath = tmpdir() + "/truewheel-spec-test.pdf"; await dl.saveAs(pdfPath);
+  const pdf = readFileSync(pdfPath);
+  let pdfText = ""; try { pdfText = execFileSync("pdftotext", ["-layout", pdfPath, "-"]).toString(); } catch (e) { pdfText = "pdftotext failed: " + e.message; }
+  const shownTotal = await total(), shownHub = await page.$eval("[data-spec] li:nth-child(3) .v", e => e.textContent);
+  check("Download build spec gives a valid PDF with this build's parts and total",
+    pdf.subarray(0, 5).toString() === "%PDF-" && /^truewheel-build-TW-[A-Z0-9]+\.pdf$/.test(dl.suggestedFilename()) && pdfText.includes(shownTotal) && pdfText.includes(shownHub) && pdfText.includes("Carbon aero") && pdfText.includes("bead seat"),
+    `${dl.suggestedFilename()}, ${pdf.length} bytes, total ${shownTotal}, hub ${shownHub}`);
+
   // Booking: day chips and summary
   const chipCount = await page.$$eval("[data-date-chips] .day", c => c.length);
   await page.click("[data-date-chips] .day >> nth=1");

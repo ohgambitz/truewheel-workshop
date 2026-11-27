@@ -59,3 +59,22 @@
 - **Layout:** 6/6 widths (320, 390, 768, 1024, 1440, 1920) pass with no overflow, no clipped text and 44 px phone tap targets (`node tests/visual.mjs polish-final`).
 - **Lighthouse:** results are in the main report and in `docs/lighthouse/polish-*`.
 - **GitHub Pages:** still plain static files, with TypeScript compiled to `assets/js` and committed. There is no build server, and the CSP is unchanged (all motion uses CSS classes or CSSOM styles, with no inline styles or scripts).
+
+## Lighthouse (measured 2026-11-27)
+| Run | Performance | Accessibility | Best practices | SEO | FCP | LCP | TBT | CLS |
+|---|---|---|---|---|---|---|---|---|
+| Live site, mobile (4 runs, all identical scores) | 100 | 100 | 100 | 100 | 1.0 s | 1.4 to 1.5 s | 10 to 20 ms | 0 |
+| Live site, desktop | 100 | 100 | 100 | 100 | 0.3 s | 0.4 s | 0 ms | 0 |
+| Local server, mobile (uncompressed, 3 runs) | 96 | 100 | 100 | 100 | 1.7 s | 2.6 s | 0 ms | 0 |
+| Local server, desktop | 100 | 100 | 100 | 100 | 0.4 s | 0.6 s | 0 ms | 0 |
+
+The local server sends files uncompressed, so its mobile numbers are pessimistic. Before this pass the local score was 97 with a 2.4 s LCP. The difference comes from the stylesheet growing from 30 KB to 36 KB uncompressed (8.5 KB as GitHub Pages serves it). The live site, which is what visitors get, scores 100. Reports are in `docs/lighthouse/live-polish-*` and `docs/lighthouse/polish-*`.
+
+## Live interaction check (Playwright against the deployed site, 390 and 1440 px)
+No console errors, failed requests or horizontal overflow at either width. The following worked:
+- The tension demo knocks out, trues and announces "Trued. Tension spread is now 2%."
+- Choosing Carbon gives $1,864, updates the spec sheet to Carbon, and shows a weight of 1,484 g in both places.
+- "Book this build" selects Custom wheel build and fills the notes.
+- An empty submit marks the name as invalid.
+- With a day chip, name and email filled in, the form honestly says online booking isn't switched on.
+- The FAQ opens.

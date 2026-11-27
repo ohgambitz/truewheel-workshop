@@ -1,7 +1,10 @@
 import { cssVar, prefersReducedMotion } from "./motion.js";
 
 const SPOKES = 32;
-const DURATION_MS = 1600;
+const KNOCK_MS = 280;     // how long the knock takes to throw the wheel out
+const PAUSE_MS = 380;     // beat before the mechanic starts
+const SPOKE_GAP_MS = 42;  // spoke-to-spoke stagger as the key goes round the rim
+const SETTLE_MS = 560;    // each spoke's damped settle
 
 const roughValues = (): number[] =>
   Array.from({ length: SPOKES }, (_, i) => 1 + Math.sin(i * 1.7) * 0.14 + (Math.random() - 0.5) * 0.3);
@@ -9,28 +12,40 @@ const trueValues = (): number[] =>
   Array.from({ length: SPOKES }, () => 1 + (Math.random() - 0.5) * 0.05);
 const spreadPercent = (v: number[]): number => Math.round(((Math.max(...v) - Math.min(...v)) / 2) * 100);
 const easeOutCubic = (k: number): number => 1 - Math.pow(1 - k, 3);
+// Damped spring from 0 to 1 with one small overshoot, like a nipple turned a touch past and settling back.
+const spring = (k: number): number => (k >= 1 ? 1 : 1 - Math.exp(-6 * k) * Math.cos(7.5 * k));
 
-/** Spoke-tension chart that starts uneven and settles to an even ring ("truing"). */
+type Phase = "true" | "knock" | "truing";
+
+/** Spoke-tension instrument: a knock throws the readings out, then the wheel is trued spoke by spoke round the rim. */
 export function initTensionChart(root: HTMLElement): void {
   const canvas = root.querySelector<HTMLCanvasElement>("canvas");
   const value = root.querySelector<HTMLElement>("[data-spread-value]");
   const label = root.querySelector<HTMLElement>("[data-spread-label]");
   const button = root.querySelector<HTMLButtonElement>("[data-knock]");
+  const live = root.querySelector<HTMLElement>("[data-spread-live]");
   if (!canvas || !value || !label || !button) return;
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
   let current = trueValues();
-  let frameId = 0;
+  let active = -1; // spoke the "key" is on while truing
+  let frameId = 0, timerId = 0;
+  let size = 0, dpr = 1;
+  let colors = { light: "", brass: "" };
 
-  const draw = (vals: number[]): void => {
-    const dpr = window.devicePixelRatio || 1;
-    const size = canvas.getBoundingClientRect().width || 320;
+  const measure = (): void => {
+    dpr = window.devicePixelRatio || 1;
+    size = canvas.getBoundingClientRect().width || 300;
     canvas.width = Math.round(size * dpr);
     canvas.height = Math.round(size * dpr);
+    colors = { light: cssVar("--on-frame"), brass: cssVar("--brass") };
+  };
+
+  const draw = (vals: number[]): void => {
+    if (!size) measure();
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const c = size / 2, r = c * 0.62;
-    const light = cssVar("--on-frame"), brass = cssVar("--brass");
+    const c = size / 2, r = c * 0.62, { light, brass } = colors;
     ctx.clearRect(0, 0, size, size);
     ctx.strokeStyle = light; ctx.globalAlpha = 0.9; ctx.lineWidth = Math.max(5, size * 0.028);
     ctx.beginPath(); ctx.arc(c, c, c * 0.93, 0, Math.PI * 2); ctx.stroke();
@@ -44,48 +59,77 @@ export function initTensionChart(root: HTMLElement): void {
     };
     for (let i = 0; i < SPOKES; i++) {
       const [x1, y1] = point(i, c * 0.07), [x2, y2] = point(i, c * 0.86);
-      ctx.strokeStyle = light; ctx.globalAlpha = 0.35; ctx.lineWidth = 1;
+      const on = i === active;
+      ctx.strokeStyle = on ? brass : light; ctx.globalAlpha = on ? 0.95 : 0.3; ctx.lineWidth = on ? 2 : 1;
       ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-      const [px, py] = point(i, r * vals[i]);
-      ctx.globalAlpha = 1; ctx.fillStyle = brass;
-      ctx.beginPath(); ctx.arc(px, py, Math.max(3, size * 0.009), 0, Math.PI * 2); ctx.fill();
     }
     ctx.setLineDash([4, 6]); ctx.strokeStyle = light; ctx.globalAlpha = 0.7; ctx.lineWidth = 1.2;
-    ctx.beginPath(); ctx.arc(c, c, r, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1;
-    ctx.strokeStyle = brass; ctx.lineWidth = Math.max(2, size * 0.006); ctx.lineJoin = "round";
+    ctx.beginPath(); ctx.arc(c, c, r, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+    ctx.globalAlpha = 1; ctx.strokeStyle = brass; ctx.lineWidth = Math.max(2, size * 0.006); ctx.lineJoin = "round";
     ctx.beginPath();
     for (let i = 0; i <= SPOKES; i++) {
       const [x, y] = point(i % SPOKES, r * vals[i % SPOKES]);
       if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
     }
     ctx.stroke(); ctx.fillStyle = brass; ctx.globalAlpha = 0.12; ctx.fill(); ctx.globalAlpha = 1;
+    for (let i = 0; i < SPOKES; i++) {
+      const [px, py] = point(i, r * vals[i]);
+      ctx.fillStyle = brass;
+      ctx.beginPath(); ctx.arc(px, py, Math.max(3, size * 0.009) * (i === active ? 1.7 : 1), 0, Math.PI * 2); ctx.fill();
+    }
   };
 
-  const show = (vals: number[], settled: boolean): void => {
+  const show = (vals: number[], phase: Phase): void => {
+    root.dataset.phase = phase;
     value.textContent = `${spreadPercent(vals)}%`;
-    label.textContent = settled ? "tension spread after truing" : "tension spread before truing";
+    label.textContent = phase === "true" ? "tension spread after truing" : phase === "knock" ? "tension spread, knocked out" : "truing, spoke by spoke";
   };
 
-  const trueWheel = (delayMs: number): void => {
-    cancelAnimationFrame(frameId);
-    const from = roughValues(), to = trueValues();
-    current = from; draw(from); show(from, false);
-    if (prefersReducedMotion()) { current = to; draw(to); show(to, true); return; }
-    window.setTimeout(() => {
-      const start = performance.now();
-      const step = (now: number): void => {
-        const k = Math.min(1, (now - start) / DURATION_MS), e = easeOutCubic(k);
-        current = from.map((v, i) => v + (to[i] - v) * e);
-        draw(current); show(current, k >= 1);
-        if (k < 1) frameId = requestAnimationFrame(step);
-      };
-      frameId = requestAnimationFrame(step);
-    }, delayMs);
+  const animate = (ms: number, frame: (k: number) => void, done: () => void): void => {
+    const start = performance.now();
+    const step = (now: number): void => {
+      const k = Math.min(1, (now - start) / ms);
+      frame(k);
+      if (k < 1) frameId = requestAnimationFrame(step); else done();
+    };
+    frameId = requestAnimationFrame(step);
   };
 
-  button.addEventListener("click", () => trueWheel(300));
+  const finish = (to: number[], announce: boolean): void => {
+    active = -1; current = to; draw(to); show(to, "true");
+    if (announce && live) live.textContent = `Trued. Tension spread is now ${spreadPercent(to)}%.`;
+  };
+
+  const trueRound = (from: number[], announce: boolean): void => {
+    const to = trueValues();
+    const total = SPOKE_GAP_MS * (SPOKES - 1) + SETTLE_MS;
+    animate(total, k => {
+      const t = k * total;
+      current = from.map((v, i) => v + (to[i] - v) * spring(Math.max(0, (t - i * SPOKE_GAP_MS) / SETTLE_MS)));
+      active = Math.min(SPOKES - 1, Math.floor(t / SPOKE_GAP_MS));
+      draw(current); show(current, "truing");
+    }, () => finish(to, announce));
+  };
+
+  const run = (fromCurrent: boolean, announce: boolean): void => {
+    cancelAnimationFrame(frameId); window.clearTimeout(timerId);
+    const rough = roughValues();
+    if (prefersReducedMotion()) { finish(trueValues(), announce); return; }
+    if (!fromCurrent) { current = rough; active = -1; draw(rough); show(rough, "knock"); timerId = window.setTimeout(() => trueRound(rough, announce), 600); return; }
+    // The knock: readings jolt out of true with a quick decaying shake of the instrument.
+    const start = current.slice();
+    animate(KNOCK_MS, k => {
+      const e = easeOutCubic(k);
+      current = start.map((v, i) => v + (rough[i] - v) * e);
+      active = -1; draw(current); show(current, "knock");
+      canvas.style.transform = k < 1 ? `translateX(${(Math.sin(k * 28) * 5 * (1 - k)).toFixed(2)}px)` : "";
+    }, () => { canvas.style.transform = ""; timerId = window.setTimeout(() => trueRound(rough, announce), PAUSE_MS); });
+  };
+
+  button.addEventListener("click", () => run(true, true));
   let resizeTimer = 0;
-  window.addEventListener("resize", () => { window.clearTimeout(resizeTimer); resizeTimer = window.setTimeout(() => draw(current), 150); });
-  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => draw(current));
-  trueWheel(600);
+  window.addEventListener("resize", () => { window.clearTimeout(resizeTimer); resizeTimer = window.setTimeout(() => { measure(); draw(current); }, 150); });
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { measure(); draw(current); });
+  measure();
+  run(false, false);
 }

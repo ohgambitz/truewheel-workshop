@@ -39,10 +39,13 @@ try {
   // Tension chart
   await page.waitForFunction(() => document.querySelector("[data-spread-label]")?.textContent?.includes("after"), null, { timeout: 6000 });
   await page.click("[data-knock]");
-  const before = await page.textContent("[data-spread-label]");
-  await page.waitForFunction(() => document.querySelector("[data-spread-label]")?.textContent?.includes("after"), null, { timeout: 6000 });
-  const spread = await page.textContent("[data-spread-value]");
-  check("tension chart re-trues after a knock", before.includes("before") && parseInt(spread) <= 3, `${before} -> ${spread}`);
+  // The knock throws the readings out, the wheel is trued spoke by spoke, then it settles and announces the result.
+  await page.waitForFunction(() => document.querySelector("[data-tension-chart]")?.dataset.phase === "truing", null, { timeout: 3000 });
+  const knocked = parseInt(await page.textContent("[data-spread-value]"));
+  await page.waitForFunction(() => document.querySelector("[data-tension-chart]")?.dataset.phase === "true", null, { timeout: 6000 });
+  const spread = parseInt(await page.textContent("[data-spread-value]"));
+  const announced = await page.textContent("[data-spread-live]");
+  check("tension chart knocks out, trues spoke by spoke and announces once", knocked > 5 && spread <= 3 && announced.startsWith("Trued."), `${knocked}% -> ${spread}%, "${announced}"`);
 
   // Header state
   check("header is transparent over the hero at the top", (await page.getAttribute("[data-site-header]", "data-over")) === "true");
@@ -62,6 +65,13 @@ try {
   check("each option shows its price and weight difference", carbonDelta.includes("+$880") && carbonDelta.includes("150 g"), carbonDelta);
   await page.click("label[for='opt-rim-carbon']");
   check("choosing Carbon rims gives $1,864", (await total()) === "$1,864", await total());
+  const fb = await page.evaluate(() => ({
+    spec: [...document.querySelectorAll("[data-spec] li")].map(l => l.querySelector(".v").textContent + (l.classList.contains("is-changed") ? "*" : "")).join(" | "),
+    flashed: document.querySelector("[data-quote-lines] div.is-changed dt")?.textContent,
+    weights: [...document.querySelectorAll("[data-quote-weight]")].map(w => w.textContent),
+  }));
+  check("the spec readout and quote line flag the part just changed", fb.spec.includes("Carbon*") && fb.flashed === "Rims, pair", `${fb.spec}; flashed ${fb.flashed}`);
+  check("the quote shows the estimated weight next to the total", fb.weights.length === 2 && fb.weights.every(w => w === fb.weights[0] && /^\d[\d,]* g$/.test(w)), fb.weights.join(", "));
   await page.waitForFunction(() => document.querySelector("[data-preview] img.is-front")?.currentSrc.includes("carbon-28"), null, { timeout: 5000 }).catch(() => {});
   const front = await page.$eval("[data-preview] img.is-front", i => i.currentSrc);
   check("the preview switches to the carbon render", front.includes("wheel-carbon-28"), front.split("/").pop());

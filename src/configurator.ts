@@ -72,7 +72,9 @@ export function initConfigurator(root: HTMLElement, onBook: (q: Quote) => void):
   const lines = root.querySelector<HTMLElement>("[data-quote-lines]");
   const totals = [...root.querySelectorAll<HTMLElement>("[data-quote-total]")];
   const leads = [...root.querySelectorAll<HTMLElement>("[data-quote-lead]")];
-  const weight = root.querySelector<HTMLElement>("[data-quote-weight]");
+  const weights = [...root.querySelectorAll<HTMLElement>("[data-quote-weight]")];
+  const spec = root.querySelector<HTMLElement>("[data-spec]");
+  let changed: Group | null = null;
   const preview = root.querySelector<HTMLElement>("[data-preview]");
   const caption = root.querySelector<HTMLElement>("[data-preview-caption]");
   const books = [...root.querySelectorAll<HTMLAnchorElement>("[data-book-build]")];
@@ -92,7 +94,7 @@ export function initConfigurator(root: HTMLElement, onBook: (q: Quote) => void):
       const note = document.createElement("span"); note.className = "opt-note"; note.textContent = opt.note;
       const delta = document.createElement("span"); delta.className = "opt-delta"; deltas.set(id, delta);
       label.append(name, note, delta);
-      input.addEventListener("change", () => { sel[group] = opt.id; render(); });
+      input.addEventListener("change", () => { sel[group] = opt.id; changed = group; render(); });
       // Warm the image cache for the preview this option would show.
       label.addEventListener("pointerenter", () => preload(group === "rim" ? opt.id : sel.rim, group === "spokes" ? (opt.spokes ?? 28) : quoteFor(sel).spokesPerWheel));
       const wrap = document.createElement("div"); wrap.className = "opt"; wrap.append(input, label);
@@ -124,12 +126,32 @@ export function initConfigurator(root: HTMLElement, onBook: (q: Quote) => void):
     lines.replaceChildren(...q.lines.map(([k, v, p]) => {
       const row = document.createElement("div");
       const dt = document.createElement("dt"); dt.textContent = k;
-      const dd = document.createElement("dd"); dd.textContent = `${v}: ${p}`;
+      const dd = document.createElement("dd");
+      const part = document.createElement("span"); part.className = "part"; part.textContent = v;
+      const price = document.createElement("span"); price.className = "price"; price.textContent = p;
+      dd.append(part, price);
       row.append(dt, dd); return row;
     }));
+    // Visual feedback: the line and spec item for the part just changed flash brass once.
+    const LINE_FOR: Record<Group, number> = { size: 0, rim: 0, hub: 1, spokes: 2 };
+    if (changed) lines.children[LINE_FOR[changed]]?.classList.add("is-changed");
+    if (spec) {
+      const items: [Group, string, string][] = [
+        ["size", "Size", pick("size", sel.size).name], ["rim", "Rims", q.rimName],
+        ["hub", "Hubs", pick("hub", sel.hub).name], ["spokes", "Spokes", `${q.spokesPerWheel} per wheel`],
+      ];
+      spec.replaceChildren(...items.map(([g, key, val]) => {
+        const li = document.createElement("li");
+        const k = document.createElement("span"); k.className = "k"; k.textContent = key;
+        const v = document.createElement("span"); v.className = "v"; v.textContent = val;
+        li.append(k, v);
+        if (g === changed) li.className = "is-changed";
+        return li;
+      }));
+    }
     totals.forEach(t => setOdometer(t, money(q.total)));
     leads.forEach(l => (l.textContent = q.leadText));
-    if (weight) weight.textContent = `${q.weight.toLocaleString("en-US")} g`;
+    weights.forEach(w => (w.textContent = `${q.weight.toLocaleString("en-US")} g`));
     // Differences are shown against the current choice in each step, so every option says what switching would do.
     (Object.keys(OPTIONS) as Group[]).forEach(group => {
       const current = pick(group, sel[group]);

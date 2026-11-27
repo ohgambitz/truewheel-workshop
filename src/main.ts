@@ -2,6 +2,7 @@ import { initBooking } from "./booking.js";
 import { initCraftChapter, initHeaderState } from "./chapters.js";
 import { initConfigurator } from "./configurator.js";
 import { initNav } from "./nav.js";
+import { initReveal } from "./reveal.js";
 import { initTensionChart } from "./tension-chart.js";
 
 const header = document.querySelector<HTMLElement>("[data-site-header]");
@@ -25,6 +26,7 @@ idle(() => {
   if (craft) initCraftChapter(craft);
   const booking = form ? initBooking(form) : null;
   if (builder) initConfigurator(builder, q => booking?.prefillBuild(q));
+  initReveal([".sec-head", ".svc", ".build-steps fieldset", ".quote", ".card-rows li", ".bk", ".faq-head", ".faq details", "footer .fgrid > *"]);
 });
 
 const year = document.querySelector("[data-year]");

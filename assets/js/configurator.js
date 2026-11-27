@@ -59,7 +59,9 @@ export function initConfigurator(root, onBook) {
     const lines = root.querySelector("[data-quote-lines]");
     const totals = [...root.querySelectorAll("[data-quote-total]")];
     const leads = [...root.querySelectorAll("[data-quote-lead]")];
-    const weight = root.querySelector("[data-quote-weight]");
+    const weights = [...root.querySelectorAll("[data-quote-weight]")];
+    const spec = root.querySelector("[data-spec]");
+    let changed = null;
     const preview = root.querySelector("[data-preview]");
     const caption = root.querySelector("[data-preview-caption]");
     const books = [...root.querySelectorAll("[data-book-build]")];
@@ -90,7 +92,7 @@ export function initConfigurator(root, onBook) {
             delta.className = "opt-delta";
             deltas.set(id, delta);
             label.append(name, note, delta);
-            input.addEventListener("change", () => { sel[group] = opt.id; render(); });
+            input.addEventListener("change", () => { sel[group] = opt.id; changed = group; render(); });
             label.addEventListener("pointerenter", () => preload(group === "rim" ? opt.id : sel.rim, group === "spokes" ? (opt.spokes ?? 28) : quoteFor(sel).spokesPerWheel));
             const wrap = document.createElement("div");
             wrap.className = "opt";
@@ -126,14 +128,41 @@ export function initConfigurator(root, onBook) {
             const dt = document.createElement("dt");
             dt.textContent = k;
             const dd = document.createElement("dd");
-            dd.textContent = `${v}: ${p}`;
+            const part = document.createElement("span");
+            part.className = "part";
+            part.textContent = v;
+            const price = document.createElement("span");
+            price.className = "price";
+            price.textContent = p;
+            dd.append(part, price);
             row.append(dt, dd);
             return row;
         }));
+        const LINE_FOR = { size: 0, rim: 0, hub: 1, spokes: 2 };
+        if (changed)
+            lines.children[LINE_FOR[changed]]?.classList.add("is-changed");
+        if (spec) {
+            const items = [
+                ["size", "Size", pick("size", sel.size).name], ["rim", "Rims", q.rimName],
+                ["hub", "Hubs", pick("hub", sel.hub).name], ["spokes", "Spokes", `${q.spokesPerWheel} per wheel`],
+            ];
+            spec.replaceChildren(...items.map(([g, key, val]) => {
+                const li = document.createElement("li");
+                const k = document.createElement("span");
+                k.className = "k";
+                k.textContent = key;
+                const v = document.createElement("span");
+                v.className = "v";
+                v.textContent = val;
+                li.append(k, v);
+                if (g === changed)
+                    li.className = "is-changed";
+                return li;
+            }));
+        }
         totals.forEach(t => setOdometer(t, money(q.total)));
         leads.forEach(l => (l.textContent = q.leadText));
-        if (weight)
-            weight.textContent = `${q.weight.toLocaleString("en-US")} g`;
+        weights.forEach(w => (w.textContent = `${q.weight.toLocaleString("en-US")} g`));
         Object.keys(OPTIONS).forEach(group => {
             const current = pick(group, sel[group]);
             OPTIONS[group].forEach(opt => {

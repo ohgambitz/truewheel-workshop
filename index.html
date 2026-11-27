@@ -74,9 +74,10 @@
       <div class="hero-stage">
         <img class="hero-wheel" data-bleed src="assets/img/studio/wheel-carbon-28-1100.webp" srcset="assets/img/studio/wheel-carbon-28-600.webp 600w, assets/img/studio/wheel-carbon-28-800.webp 800w, assets/img/studio/wheel-carbon-28-1100.webp 1100w, assets/img/studio/wheel-carbon-28-1400.webp 1400w" sizes="(max-width: 600px) 78vw, (max-width: 1000px) 92vw, 760px" width="1400" height="1400" alt="A hand-built road wheel with 30 mm carbon rims and 28 bladed spokes." fetchpriority="high">
         <figure class="instrument" data-tension-chart>
-          <div class="inst-head"><span>Spoke tension, 32 spokes</span><span class="inst-read" aria-live="polite"><b data-spread-value>2%</b></span></div>
+          <div class="inst-head"><span>Spoke tension, 32 spokes</span><span class="inst-read"><b data-spread-value>2%</b></span></div>
           <canvas width="300" height="300" role="img" aria-label="Spoke tension chart for a 32-spoke wheel. The tensions start uneven and settle into an even ring as the wheel is trued."></canvas>
           <div class="inst-foot"><span class="inst-label" data-spread-label>tension spread after truing</span><button class="btn btn-line" type="button" data-knock>Knock it out of true</button></div>
+          <p class="visually-hidden" aria-live="polite" data-spread-live></p>
           <figcaption class="visually-hidden">How we read a wheel on the truing stand: each line is one spoke and the dashed ring is the target tension.</figcaption>
         </figure>
         <p class="render-note">Product images are renders.</p>
@@ -152,7 +153,7 @@
         <li class="svc">
           <div class="svc-head"><h3>Wheel build</h3><p class="svc-time">7 to 10 days</p></div>
           <ul class="svc-inc"><li>Your choice of rim, hub and spokes</li><li>Stress-relieved and tension-mapped</li><li>A build card with every spoke reading</li><li>12 months of free re-truing</li></ul>
-          <p class="svc-price">$420<small>labour and spokes, from</small></p>
+          <p class="svc-price"><small class="svc-from">from</small>$420<small>labour and spokes</small></p>
         </li>
       </ol>
       <p class="price-note">A safety check's $65 comes off any bigger service you approve.</p>
@@ -168,6 +169,7 @@
       <div class="build-grid">
         <div class="build-stage">
           <div class="preview" data-preview>
+            <ul class="spec" data-spec aria-hidden="true"></ul>
             <img class="is-front" src="assets/img/studio/wheel-alloy-28-1100.webp" srcset="assets/img/studio/wheel-alloy-28-600.webp 600w, assets/img/studio/wheel-alloy-28-1100.webp 1100w" sizes="(max-width: 1000px) 72vw, 600px" width="1100" height="1100" alt="Alloy rims laced with 28 spokes" loading="lazy" decoding="async">
             <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" width="1100" height="1100" alt="" decoding="async">
           </div>
@@ -182,7 +184,7 @@
             <dl class="lines" data-quote-lines></dl>
             <div class="total-row">
               <output class="total-big" data-quote-total aria-live="polite" data-value="">$984</output>
-              <div class="total-meta"><span data-quote-lead>Ready in 7 to 10 days</span><span>Pair, estimated weight</span></div>
+              <div class="total-meta"><span data-quote-lead>Ready in 7 to 10 days</span><span><span class="mono" data-quote-weight>1,634 g</span> per pair, estimated</span></div>
             </div>
             <a class="btn btn-brass" href="#book" data-book-build>Book this build</a>
           </div>
@@ -198,7 +200,7 @@
   <section id="process" aria-labelledby="process-title">
     <div class="wrap">
       <div class="sec-head">
-        <h2 id="process-title">From drop-off to first ride</h2>
+        <h2 id="process-title">From <span class="nowrap">drop-off</span> to first ride</h2>
         <p>Every job follows the same four stages and ends with the card below, filled in for your bike.</p>
       </div>
       <div class="card">
@@ -216,7 +218,7 @@
   <div id="book" class="book">
     <div class="wrap book-grid">
       <div class="book-info">
-        <h2>Request a drop-off</h2>
+        <h2>Request a <span class="nowrap">drop-off</span></h2>
         <p>Choose a service and a day from Tuesday to Saturday. We reply by email to confirm, and you pay when you pick up.</p>
         <dl class="hours">
           <dt>Tuesday to Friday</dt><dd>8:00 am to 6:30 pm</dd>
@@ -247,7 +249,7 @@
         <p class="summary"><b>Requesting</b><span data-booking-summary aria-live="polite">Full tune, $145. Choose a drop-off day.</span></p>
         <div class="form-status" data-form-status role="status" aria-live="polite" hidden></div>
         <div class="fend">
-          <small>We only use these details to arrange your drop-off.</small>
+          <small>We only use these details to arrange your <span class="nowrap">drop-off.</span></small>
           <button class="btn btn-brass" type="submit">Request drop-off</button>
         </div>
       </form>
@@ -256,7 +258,7 @@
 
   <section id="faq" aria-labelledby="faq-title">
     <div class="wrap faq-grid">
-      <h2 id="faq-title">Questions</h2>
+      <div class="faq-head"><h2 id="faq-title">Questions</h2><p>Something not covered here? Add it to the notes when you <a href="#book">request a <span class="nowrap">drop-off</span></a> and we answer it in the confirmation email.</p></div>
       <div class="faq">
         <details open><summary>Why hand-built instead of factory wheels?</summary><p>Machines tension factory wheels to a range. We bring every spoke to the same tension and stress-relieve them, so the wheel stays straight longer. You also pick the rim, hub and spoke count for your weight and riding.</p></details>
         <details><summary>How do I know what my bike needs?</summary><p>Book a safety check. If it needs more, we send a written quote, and the $65 comes off any bigger service you approve.</p></details>
@@ -272,7 +274,7 @@
   <div class="wrap">
     <div class="fgrid">
       <div class="f-brand"><a class="mark" href="#top">TRUEWHEEL</a><p>Hand-built bicycle wheels and fixed-price servicing.</p></div>
-      <div class="f-hours"><span class="f-label">Opening hours</span><p>Tue to Fri 8:00 to 18:30<br>Sat 9:00 to 16:00<br>Sun and Mon closed</p></div>
+      <div class="f-hours"><span class="f-label">Opening hours</span><p>Tue to Fri, 8:00 am to 6:30 pm<br>Sat, 9:00 am to 4:00 pm<br>Sun and Mon, closed</p></div>
       <div class="f-links"><span class="f-label">Get started</span><a href="#book">Request a drop-off</a><a href="#builder">Build a wheelset</a><a href="#services">See prices</a></div>
     </div>
     <p class="f-base">Sample business site: the name, prices and hours are illustrative, and product images are renders. &copy; <span data-year>2026</span> Truewheel Workshop.</p>

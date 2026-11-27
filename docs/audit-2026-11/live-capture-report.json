@@ -1,0 +1,122 @@
+{
+ "desktop-1440": {
+  "status": 200,
+  "loadMs": 1782,
+  "errors": [],
+  "title": "Truewheel Workshop | Hand-built bicycle wheels and servicing",
+  "height": 6929,
+  "overflowX": 0,
+  "sections": [
+   {
+    "id": "top",
+    "h": 713
+   },
+   {
+    "id": "craft",
+    "h": 713
+   },
+   {
+    "id": "services",
+    "h": 1052
+   },
+   {
+    "id": "builder",
+    "h": 1861
+   },
+   {
+    "id": "process",
+    "h": 416
+   },
+   {
+    "id": "book",
+    "h": 797
+   },
+   {
+    "id": "faq",
+    "h": 724
+   }
+  ],
+  "h1": "160px",
+  "body": "18px"
+ },
+ "tablet-768": {
+  "status": 200,
+  "loadMs": 1251,
+  "errors": [],
+  "title": "Truewheel Workshop | Hand-built bicycle wheels and servicing",
+  "height": 7758,
+  "overflowX": 0,
+  "sections": [
+   {
+    "id": "top",
+    "h": 865
+   },
+   {
+    "id": "craft",
+    "h": 1179
+   },
+   {
+    "id": "services",
+    "h": 1030
+   },
+   {
+    "id": "builder",
+    "h": 2001
+   },
+   {
+    "id": "process",
+    "h": 503
+   },
+   {
+    "id": "book",
+    "h": 972
+   },
+   {
+    "id": "faq",
+    "h": 651
+   }
+  ],
+  "h1": "92.16px",
+  "body": "18px"
+ },
+ "mobile-390": {
+  "status": 200,
+  "loadMs": 1250,
+  "errors": [],
+  "title": "Truewheel Workshop | Hand-built bicycle wheels and servicing",
+  "height": 8403,
+  "overflowX": 0,
+  "sections": [
+   {
+    "id": "top",
+    "h": 1074
+   },
+   {
+    "id": "craft",
+    "h": 962
+   },
+   {
+    "id": "services",
+    "h": 1129
+   },
+   {
+    "id": "builder",
+    "h": 2028
+   },
+   {
+    "id": "process",
+    "h": 655
+   },
+   {
+    "id": "book",
+    "h": 1239
+   },
+   {
+    "id": "faq",
+    "h": 758
+   }
+  ],
+  "h1": "57.6px",
+  "body": "18px"
+ }
+}

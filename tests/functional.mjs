@@ -4,7 +4,7 @@ import { serve } from "./serve.mjs";
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
 
-const URL_ = "http://127.0.0.1:4173/";
+const URL_ = process.env.TEST_URL ?? "http://127.0.0.1:4173/";
 const results = [];
 const check = (name, ok, detail = "") => { results.push({ name, ok, detail }); console.log(`${ok ? "PASS" : "FAIL"}  ${name}${detail ? "  (" + detail + ")" : ""}`); };
 
@@ -81,10 +81,14 @@ try {
   await page.click("label[for='opt-hub-ck-r45']");
   const lead = await page.textContent("[data-quote-lead]");
   check("Chris King hubs add a week to lead time", lead === "Ready in 14 to 17 days", lead);
-  const missingRenders = [];
-  for (const rim of ["alloy", "carbon", "carbon-aero"]) for (const n of [24, 28, 32]) for (const w of [600, 1100]) {
-    const r = await page.request.get(`${URL_}assets/img/studio/wheel-${rim}-${n}-${w}.webp`); if (r.status() !== 200) missingRenders.push(`${rim}-${n}-${w}`);
-  }
+  // Fetched from inside the page so it uses the browser's network path (works against the local server and the live site).
+  const missingRenders = await page.evaluate(async () => {
+    const missing = [];
+    for (const rim of ["alloy", "carbon", "carbon-aero"]) for (const n of [24, 28, 32]) for (const w of [600, 1100]) {
+      const r = await fetch(`assets/img/studio/wheel-${rim}-${n}-${w}.webp`, { method: "HEAD", cache: "no-store" }); if (!r.ok) missing.push(`${rim}-${n}-${w}`);
+    }
+    return missing;
+  });
   check("all 18 configurator render files exist", missingRenders.length === 0, missingRenders.join(", "));
   await page.click("[data-book-build]");
   const svcChecked = await page.isChecked("#svc-build"), notes = await page.inputValue("#bNotes");

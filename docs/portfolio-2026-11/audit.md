@@ -63,3 +63,37 @@ These comparisons are from general familiarity with how such sites present produ
 
 ## 4. Verification (local server unless marked live)
 See the main report for the measured before-and-after table.
+
+### Measured before and after (2026-11-27)
+"Before" is commit 1245ccc, measured earlier the same day; "after" is commit f9d9ae2 and later.
+
+| Measure | Before | After |
+|---|---|---|
+| Functional checks | 28/28 | 34/34 locally and 34/34 against the live site |
+| Layout audit, 6 widths (320 to 1920) | 6/6 | 6/6 |
+| Lighthouse live, mobile (perf/a11y/BP/SEO) | 100/100/100/100, LCP 1.4 to 1.5 s, CLS 0 (4 runs) | 100/100/100/100, LCP 1.5 s, CLS 0 (4 runs) |
+| Lighthouse live, desktop | 100/100/100/100, LCP 0.4 s | 100/100/100/100, LCP 0.4 s |
+| Lighthouse local, mobile (uncompressed) | 96, LCP 2.6 s (3 runs) | 95 to 96, LCP 2.7 s (3 runs) |
+| Lighthouse local, desktop | 100/100/100/100 | 100/100/100/100 |
+| Page weight, live mobile | 427 KiB | 430 KiB (the 7 KB PDF module loads only on click) |
+
+The local phone result is within run-to-run noise, but slightly worse rather than better: the stylesheet grew again. The live site, which serves files compressed, is unchanged at 100.
+
+The new functional checks cover:
+- Swapping a road hub when 29 inch is chosen, with the reason shown.
+- Shimano 105 forcing a road size and 32 spokes.
+- A later spoke choice swapping the hub instead.
+- Each of nine options' stated differences matching the real change in total.
+- The rim profile redrawing to 45 mm.
+- The downloaded PDF being valid, with its text matching the build on screen (checked with `pdftotext`).
+
+The PDF was also parsed with pypdf (one page, one embedded image) and rendered with `pdftoppm` for visual review.
+
+Captures are in `docs/portfolio-2026-11/` (`round1`, `round2` and the live `after` set), with comparison sheets `compare-mobile.jpg` and `compare-desktop.jpg`. The "before" captures are `docs/polish-2026-11/after`.
+
+## Remaining limitations
+- **Photography:** product images are 3D renders, labelled as such. Real photography is the largest remaining gap against premium cycling sites.
+- **Rules and prices:** the compatibility rules, prices, lead times and business details are illustrative for this sample business, and say so.
+- **Booking:** not connected. The form says nothing was sent until `data-endpoint` is set.
+- **Browsers:** tested in Chromium only (no Safari or Firefox in this environment). The PDF uses standard fonts and baseline PDF 1.4 features.
+- **The local phone Lighthouse score** dipped 0 to 1 point, as above.

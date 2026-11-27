@@ -2,207 +2,109 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Hand-built bicycle wheels and repair. Fixed labour prices, custom wheelsets and a written quote before any work.">
-<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
-<title>Truewheel Workshop</title>
-<meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Instrument+Sans:wght@400;500;600&display=swap">
-<style>
-/* Layout: steel-frame green band opens on a live spoke-tension chart; below, a shop price board, wheel configurator and booking. Left-aligned throughout. */
-:root{
-  --ground:#F1F3EE; --surface:#FFFFFF; --frame:#1F4D3A; --ink:#173A2C; --soft:#4E6A5C; --mist:#C9D3CC; --brass:#E2B23A; --on-frame:#F1F3EE; --on-brass:#173A2C; --err:#B4232F;
-  --display:"Big Shoulders Display","Arial Narrow","Roboto Condensed",sans-serif;
-  --text:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
-  --gl:max(16px, env(safe-area-inset-left, 0px)); --gr:max(16px, env(safe-area-inset-right, 0px));
-}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#0F2219;--surface:#15291F;--frame:#163B2C;--ink:#E6EEE8;--soft:#9DB3A6;--mist:#2E4A3D;--brass:#E8BC4A;--on-frame:#E6EEE8;--on-brass:#10241A;--err:#FF8A8A;color-scheme:dark}}
-:root[data-theme="dark"]{--ground:#0F2219;--surface:#15291F;--frame:#163B2C;--ink:#E6EEE8;--soft:#9DB3A6;--mist:#2E4A3D;--brass:#E8BC4A;--on-frame:#E6EEE8;--on-brass:#10241A;--err:#FF8A8A;color-scheme:dark}
-*{box-sizing:border-box}
-body{background:var(--ground);color:var(--ink);font-family:var(--text);font-size:18px;line-height:1.6}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--frame)}
-main,footer{overflow-x:clip}
-.wrap{max-width:1200px;margin:0 auto;padding-left:var(--gl);padding-right:var(--gr)}
-h1,h2,h3{font-family:var(--display);font-weight:800;line-height:.92;letter-spacing:.005em;margin:0;text-wrap:balance}
-h2{font-size:clamp(2.6rem,6vw,4.4rem)}
-h3{font-size:1.7rem;font-weight:800}
-p{margin:0;text-wrap:pretty}
-a{color:inherit}
-:focus-visible{outline:3px solid var(--brass);outline-offset:3px;border-radius:6px}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 26px;border-radius:999px;font:600 1rem var(--text);text-decoration:none;cursor:pointer;border:2px solid currentColor;background:transparent;color:inherit}
-.btn-brass{background:var(--brass);border-color:var(--brass);color:var(--on-brass)}
-.btn-brass:hover{filter:brightness(1.07)}
-.btn:active{transform:translateY(1px)}
-.btn-line:hover{background:color-mix(in srgb,currentColor 12%,transparent)}
-
-/* header lives inside the green band */
-header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--frame);color:var(--on-frame)}
-.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;height:68px}
-.mark{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:900;font-size:1.6rem;letter-spacing:.02em;text-decoration:none}
-.links{display:flex;gap:28px}
-.links a{text-decoration:none;opacity:.8}
-.links a:hover{opacity:1;text-decoration:underline;text-underline-offset:6px;text-decoration-color:var(--brass)}
-.bar .btn{min-height:42px;padding:0 18px;font-size:.95rem}
-@media (max-width:860px){.links{display:none}}
-
-/* hero */
-.hero{background:var(--frame);color:var(--on-frame);padding-block:24px 72px}
-.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
-.hero h1{font-size:clamp(4.2rem,12vw,10rem);font-weight:900;line-height:.82;text-transform:uppercase;letter-spacing:-.005em}
-.hero-copy{display:grid;gap:32px;min-width:0}
-.hero .lede{font-size:1.2rem;max-width:40ch;opacity:.88}
-.cta{display:flex;flex-wrap:wrap;gap:12px}
-.chart{display:grid;gap:14px;min-width:0}
-.chart canvas{width:100%;max-width:520px;aspect-ratio:1;height:auto;display:block;margin:0 auto}
-.chart-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;max-width:520px;margin:0 auto;width:100%}
-.spread{font-variant-numeric:tabular-nums;font-size:.98rem}
-.spread b{font-family:var(--display);font-size:2rem;font-weight:800;color:var(--brass);margin-right:6px;vertical-align:-2px}
-.chart .btn{min-height:42px;padding:0 18px;font-size:.92rem}
-.chart small{opacity:.7;font-size:.85rem;max-width:520px;margin:0 auto;width:100%}
-@media (max-width:900px){.hero-grid{grid-template-columns:1fr}.hero{padding-bottom:56px}}
-
-section{padding-block:clamp(72px,10vw,128px) 0}
-.intro{display:grid;gap:16px;max-width:760px;margin-bottom:48px}
-.intro p{color:var(--soft);font-size:1.1rem;max-width:56ch}
-
-/* price board */
-.board{display:grid;gap:0}
-.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto;gap:32px;align-items:baseline;padding-block:28px;border-top:2px solid var(--ink)}
-.row:last-child{border-bottom:2px solid var(--ink)}
-.row h3{font-size:clamp(1.9rem,3.4vw,2.6rem)}
-.row p{color:var(--soft)}
-.row .when{display:block;margin-top:6px;font-size:.92rem;color:var(--ink);font-weight:600}
-.price{font-family:var(--display);font-weight:900;font-size:clamp(3rem,6vw,4.8rem);line-height:.8;font-variant-numeric:tabular-nums;text-align:right}
-.price small{display:block;font-family:var(--text);font-weight:500;font-size:.85rem;line-height:1.4;color:var(--soft);text-align:right}
-.row.pop .price{color:var(--frame)}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .row.pop .price{color:var(--brass)}}
-:root[data-theme="dark"] .row.pop .price{color:var(--brass)}
-.pop-note{display:inline-block;margin-top:10px;font-size:.85rem;font-weight:600;background:var(--brass);color:var(--on-brass);padding:2px 10px;border-radius:999px}
-@media (max-width:760px){.row{grid-template-columns:1fr auto;gap:12px 20px}.row p{grid-column:1/-1;grid-row:2}.price{grid-column:2;grid-row:1}}
-
-/* configurator */
-.build{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
-.controls{display:grid;gap:30px;min-width:0}
-fieldset{border:none;margin:0;padding:0;min-width:0}
-legend{font-weight:600;margin-bottom:10px;padding:0}
-.opts{display:flex;flex-wrap:wrap;gap:8px}
-.opts input{position:absolute;opacity:0;pointer-events:none}
-.opts label{display:grid;gap:0;padding:10px 18px;border-radius:14px;border:2px solid var(--mist);background:var(--surface);cursor:pointer;min-height:50px;line-height:1.3}
-.opts label span{font-size:.82rem;color:var(--soft)}
-.opts label:hover{border-color:var(--soft)}
-.opts input:checked + label{border-color:var(--frame);background:var(--frame);color:var(--on-frame)}
-.opts input:checked + label span{color:var(--on-frame);opacity:.8}
-.opts input:focus-visible + label{outline:3px solid var(--brass);outline-offset:2px}
-.quote{position:sticky;top:calc(env(safe-area-inset-top,0px) + 92px);background:var(--surface);border-radius:20px;padding:28px;display:grid;gap:20px;min-width:0;border:2px solid var(--mist)}
-.quote canvas{width:min(220px,60%);aspect-ratio:1;height:auto;display:block;margin:0 auto}
-.lines{margin:0;display:grid}
-.lines div{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid var(--mist);font-size:.95rem}
-.lines dt{color:var(--soft)}
-.lines dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}
-.total{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap}
-.total b{font-family:var(--display);font-weight:900;font-size:4rem;line-height:.8;font-variant-numeric:tabular-nums}
-.total span{color:var(--soft);font-size:.95rem}
-@media (max-width:900px){.build{grid-template-columns:1fr}.quote{position:static}}
-
-/* process */
-.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;counter-reset:s;list-style:none;margin:0;padding:0}
-.steps li{display:grid;gap:10px;align-content:start}
-.steps li::before{counter-increment:s;content:counter(s);font-family:var(--display);font-weight:900;font-size:4.5rem;line-height:.8;color:var(--brass);-webkit-text-stroke:0}
-.steps p{color:var(--soft);font-size:1rem}
-@media (max-width:900px){.steps{grid-template-columns:1fr 1fr}}
-@media (max-width:520px){.steps{grid-template-columns:1fr}}
-
-/* reviews */
-.quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.ph{border:2px dashed var(--mist);border-radius:20px;padding:28px;min-height:180px;display:grid;align-content:center;gap:8px;color:var(--soft)}
-.ph b{color:var(--ink);font-weight:600}
-@media (max-width:820px){.quotes{grid-template-columns:1fr}}
-
-/* booking */
-.book{background:var(--frame);color:var(--on-frame);margin-top:clamp(72px,10vw,128px);padding-block:clamp(64px,9vw,112px)}
-.book-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:56px;align-items:start}
-.book-info{display:grid;gap:28px;min-width:0}
-.book-info p{opacity:.85}
-.hours{display:grid;grid-template-columns:auto 1fr;gap:6px 28px;margin:0;font-variant-numeric:tabular-nums}
-.hours dt{opacity:.75}
-.hours dd{margin:0}
-form.bk{display:grid;grid-template-columns:1fr 1fr;gap:18px;background:var(--surface);color:var(--ink);padding:clamp(22px,3vw,36px);border-radius:24px;min-width:0}
-.f{display:grid;gap:6px;min-width:0}
-.f.full{grid-column:1/-1}
-.f label{font-weight:600;font-size:.92rem}
-.f input,.f select,.f textarea{font:inherit;font-size:1rem;color:var(--ink);background:var(--ground);border:2px solid var(--mist);border-radius:12px;padding:12px 14px;width:100%;min-width:0;min-height:50px}
-.f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:var(--frame)}
-.f input[aria-invalid="true"]{border-color:var(--err)}
-.f textarea{min-height:100px;resize:vertical}
-.err{font-size:.85rem;color:var(--err)}
-.fend{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
-.fend small{color:var(--soft);max-width:34ch}
-.done{grid-column:1/-1;padding:18px 20px;border-radius:14px;background:color-mix(in srgb,var(--brass) 28%,var(--surface));display:grid;gap:4px}
-@media (max-width:900px){.book-grid{grid-template-columns:1fr}}
-@media (max-width:520px){form.bk{grid-template-columns:1fr}}
-
-/* faq */
-.faq{max-width:860px}
-.faq details{border-top:2px solid var(--ink)}
-.faq details:last-child{border-bottom:2px solid var(--ink)}
-.faq summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px;padding:22px 0;font-weight:600;font-size:1.15rem}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"+";font-family:var(--display);font-size:2rem;line-height:.7;color:var(--frame)}
-.faq details[open] summary::after{content:"\2212"}
-.faq details p{padding-bottom:22px;color:var(--soft);max-width:64ch}
-
-footer{margin-top:clamp(72px,10vw,128px);background:var(--frame);color:var(--on-frame);padding-block:48px 40px}
-.fgrid{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:end}
-.fgrid p{opacity:.75;font-size:.9rem;max-width:44ch}
-.fword{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(4rem,17vw,13rem);line-height:.8;margin-top:28px;color:color-mix(in srgb,var(--on-frame) 14%,transparent);white-space:nowrap}
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Truewheel Workshop | Hand-built bicycle wheels and servicing</title>
+<meta name="description" content="Hand-built bicycle wheels, trued to an even spoke tension, plus fixed-price tune-ups and overhauls. Price a custom wheelset online and request a drop-off day.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https:; form-action 'self' https:; base-uri 'self'; object-src 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="theme-color" content="#1F4D3A">
+<link rel="canonical" href="https://ohgambitz.github.io/truewheel-workshop/">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Truewheel Workshop | Hand-built bicycle wheels">
+<meta property="og:description" content="Wheels built by hand and trued to an even tension. Fixed prices, written quotes and a test ride on every job.">
+<meta property="og:url" content="https://ohgambitz.github.io/truewheel-workshop/">
+<meta property="og:image" content="https://ohgambitz.github.io/truewheel-workshop/assets/img/og-truewheel.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="assets/fonts/big-shoulders-display-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/instrument-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/site.css">
+<script type="module" src="assets/js/main.js"></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BicycleStore","name":"Truewheel Workshop","url":"https://ohgambitz.github.io/truewheel-workshop/","image":"https://ohgambitz.github.io/truewheel-workshop/assets/img/og-truewheel.jpg","description":"Hand-built bicycle wheels and fixed-price bicycle servicing.","openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Tuesday","Wednesday","Thursday","Friday"],"opens":"08:00","closes":"18:30"},{"@type":"OpeningHoursSpecification","dayOfWeek":"Saturday","opens":"09:00","closes":"16:00"}],"priceRange":"$65-$1,900"}
+</script>
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 
-<header>
+<header class="site-header" data-site-header data-menu="closed">
   <div class="wrap bar">
-    <a class="mark" href="#top" aria-label="Truewheel Workshop, home">
-      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="12.5" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="14" cy="14" r="3" fill="#E2B23A"/><path d="M14 1.5v25M1.5 14h25M5.2 5.2l17.6 17.6M22.8 5.2 5.2 22.8" stroke="currentColor" stroke-width="1.1"/></svg>
+    <a class="mark" href="#top" aria-label="Truewheel Workshop, back to top">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true" focusable="false"><circle cx="14" cy="14" r="12.5" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="14" cy="14" r="3" fill="#E2B23A"/><path d="M14 1.5v25M1.5 14h25M5.2 5.2l17.6 17.6M22.8 5.2 5.2 22.8" stroke="currentColor" stroke-width="1.1"/></svg>
       TRUEWHEEL
     </a>
-    <nav class="links" aria-label="Main">
-      <a href="#services">Prices</a>
-      <a href="#builder">Custom wheels</a>
-      <a href="#process">How it works</a>
-      <a href="#faq">Questions</a>
+    <nav aria-label="Main">
+      <ul class="links" id="site-menu" data-menu>
+        <li><a href="#craft">How we build</a></li>
+        <li><a href="#services">Prices</a></li>
+        <li><a href="#builder">Custom wheels</a></li>
+        <li><a href="#faq">Questions</a></li>
+        <li><a href="#book">Book</a></li>
+      </ul>
     </nav>
-    <a class="btn btn-brass" href="#book">Book a service</a>
+    <div class="bar-actions">
+      <a class="btn btn-brass" href="#book">Book a service</a>
+      <button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-controls="site-menu">
+        <span class="visually-hidden">Menu</span>
+        <svg width="20" height="14" viewBox="0 0 20 14" aria-hidden="true" focusable="false"><path d="M0 1h20M0 7h20M0 13h20" stroke="currentColor" stroke-width="2"/></svg>
+      </button>
+    </div>
   </div>
 </header>
 
-<main id="top">
-  <div class="hero">
+<main id="main">
+  <div class="hero" id="top">
     <div class="wrap hero-grid">
       <div class="hero-copy">
         <h1>Every spoke, even.</h1>
-        <p class="lede">We build bicycle wheels by hand and bring every spoke to the same tension. That's what keeps a wheel straight for years. Then we tune the rest of the bike around it.</p>
+        <p class="lede">We build bicycle wheels by hand and bring every spoke to the same tension, which is what keeps a wheel straight for years. Then we tune the rest of the bike around it.</p>
         <div class="cta">
           <a class="btn btn-brass" href="#book">Book a service</a>
           <a class="btn btn-line" href="#builder">Price a custom wheelset</a>
         </div>
       </div>
-      <figure class="chart" style="margin:0">
-        <canvas id="tension" role="img" aria-label="Spoke tension chart for a 32-spoke wheel. Tensions start uneven and settle to an even ring as the wheel is trued."></canvas>
+      <figure class="chart" data-tension-chart>
+        <canvas width="500" height="500" role="img" aria-label="Spoke tension chart for a 32-spoke wheel. The tensions start uneven and settle into an even ring as the wheel is trued."></canvas>
         <div class="chart-foot">
-          <p class="spread" aria-live="polite"><b id="spreadNum">24%</b><span id="spreadText">tension spread before truing</span></p>
-          <button class="btn btn-line" type="button" id="knock">Knock it out of true</button>
+          <p class="spread" aria-live="polite"><b data-spread-value>2%</b><span data-spread-label>tension spread after truing</span></p>
+          <button class="btn btn-line" type="button" data-knock>Knock it out of true</button>
         </div>
-        <small>A spoke tension chart, the way we read a wheel on the truing stand. Each line is one spoke; the ring is the target tension. Illustration.</small>
+        <figcaption>A spoke tension chart, the way we read a wheel on the truing stand. Each line is one spoke; the dashed ring is the target tension.</figcaption>
       </figure>
     </div>
   </div>
 
-  <section id="services">
+  <section id="craft" aria-labelledby="craft-title">
+    <div class="wrap craft-grid">
+      <figure class="craft-media">
+        <picture>
+          <source type="image/webp" srcset="assets/img/wheel-assembled-640.webp 640w, assets/img/wheel-assembled-1024.webp 1024w, assets/img/wheel-assembled-1600.webp 1600w" sizes="(max-width: 900px) 100vw, 640px">
+          <img src="assets/img/wheel-assembled-1024.webp" width="1600" height="1200" alt="A laced 32-spoke wheel with a silver rim and a brass hub, seen at an angle." loading="lazy" decoding="async">
+        </picture>
+        <figcaption>Rendered product image of a 32-spoke, 3-cross road wheel.</figcaption>
+      </figure>
+      <div>
+        <div class="intro">
+          <h2 id="craft-title">What "true" means here</h2>
+          <p>Every wheel leaves with a build card. These are the numbers we hold it to, checked spoke by spoke on the stand.</p>
+        </div>
+        <dl class="specs">
+          <div><dt>Spoke tension spread</dt><dd>within 5%</dd></div>
+          <div><dt>Side-to-side wobble</dt><dd>0.2 mm or less</dd></div>
+          <div><dt>Hop (up and down)</dt><dd>0.3 mm or less</dd></div>
+          <div><dt>Dish</dt><dd>centred to the frame</dd></div>
+          <div><dt>Stress relief</dt><dd>three passes</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section id="services" aria-labelledby="services-title">
     <div class="wrap">
       <div class="intro">
-        <h2>Prices on the wall</h2>
+        <h2 id="services-title">Prices on the wall</h2>
         <p>Labour is fixed. Parts are quoted separately and fitted only after you approve them.</p>
       </div>
       <div class="board">
@@ -214,34 +116,40 @@ footer{margin-top:clamp(72px,10vw,128px);background:var(--frame);color:var(--on-
     </div>
   </section>
 
-  <section id="builder">
+  <section id="builder" aria-labelledby="builder-title">
     <div class="wrap">
       <div class="intro">
-        <h2>Price a custom wheelset</h2>
+        <h2 id="builder-title">Price a custom wheelset</h2>
         <p>Choose the parts and the estimate updates. It covers a front and rear pair, spokes, nipples and build labour.</p>
       </div>
-      <div class="build">
-        <form class="controls" id="builderForm" aria-label="Wheelset options">
-          <fieldset><legend>Rim size</legend><div class="opts" id="size"></div></fieldset>
-          <fieldset><legend>Rims</legend><div class="opts" id="rim"></div></fieldset>
-          <fieldset><legend>Hubs</legend><div class="opts" id="hub"></div></fieldset>
-          <fieldset><legend>Spokes per wheel</legend><div class="opts" id="spokes"></div></fieldset>
+      <figure class="build-media">
+        <picture>
+          <source type="image/webp" srcset="assets/img/wheel-exploded-640.webp 640w, assets/img/wheel-exploded-1024.webp 1024w, assets/img/wheel-exploded-1600.webp 1600w" sizes="(max-width: 1232px) 100vw, 1200px">
+          <img src="assets/img/wheel-exploded-1024.webp" width="1600" height="1200" alt="Exploded view of a wheel: tyre, rim, spokes and hub pulled apart along the axle." loading="lazy" decoding="async">
+        </picture>
+      </figure>
+      <div class="build" data-configurator>
+        <form class="controls" aria-label="Wheelset options">
+          <fieldset><legend>Rim size</legend><div class="opts" data-options="size"></div></fieldset>
+          <fieldset><legend>Rims</legend><div class="opts" data-options="rim"></div></fieldset>
+          <fieldset><legend>Hubs</legend><div class="opts" data-options="hub"></div></fieldset>
+          <fieldset><legend>Spokes per wheel</legend><div class="opts" data-options="spokes"></div></fieldset>
         </form>
-        <aside class="quote" aria-live="polite">
-          <canvas id="buildWheel" aria-hidden="true"></canvas>
-          <dl class="lines" id="specRows"></dl>
-          <div class="total"><b id="total">$0</b><span id="lead"></span></div>
-          <a class="btn btn-brass" href="#book" id="bookBuild">Book this build</a>
+        <aside class="quote" aria-label="Your estimate">
+          <canvas data-quote-wheel width="200" height="200" aria-hidden="true"></canvas>
+          <dl class="lines" data-quote-lines></dl>
+          <div class="total"><output data-quote-total aria-live="polite">$984</output><span data-quote-lead>Ready in 7 to 10 days</span></div>
+          <a class="btn btn-brass" href="#book" data-book-build>Book this build</a>
         </aside>
       </div>
     </div>
   </section>
 
-  <section id="process">
+  <section id="process" aria-labelledby="process-title">
     <div class="wrap">
-      <div class="intro"><h2>From drop-off to first ride</h2></div>
+      <div class="intro"><h2 id="process-title">From drop-off to first ride</h2></div>
       <ol class="steps">
-        <li><h3>Drop off</h3><p>Book a slot and bring the bike in. It takes about five minutes.</p></li>
+        <li><h3>Drop off</h3><p>Request a day and bring the bike in. It takes about five minutes.</p></li>
         <li><h3>Get a quote</h3><p>We find what's worn and send a written quote. Work starts only after you approve it.</p></li>
         <li><h3>Build and tension</h3><p>Wheels are laced, stress-relieved and tension-mapped. Every reading goes on your build card.</p></li>
         <li><h3>Ride it home</h3><p>A mechanic test-rides it first, then walks you through what was done.</p></li>
@@ -249,32 +157,20 @@ footer{margin-top:clamp(72px,10vw,128px);background:var(--frame);color:var(--on-
     </div>
   </section>
 
-  <section aria-labelledby="rv">
-    <div class="wrap">
-      <div class="intro"><h2 id="rv">What riders say</h2></div>
-      <div class="quotes">
-        <div class="ph"><b>Customer review needed</b><span>Add a real quote with the rider's first name and the service they had.</span></div>
-        <div class="ph"><b>Customer review needed</b><span>Add a real quote with the rider's first name and the service they had.</span></div>
-        <div class="ph"><b>Customer review needed</b><span>Add a real quote with the rider's first name and the service they had.</span></div>
-      </div>
-    </div>
-  </section>
-
   <div id="book" class="book">
     <div class="wrap book-grid">
       <div class="book-info">
-        <h2>Book a drop-off</h2>
-        <p>Choose a day from Tuesday to Saturday. We reply to confirm, and you pay when you pick up.</p>
+        <h2>Request a drop-off</h2>
+        <p>Choose a day from Tuesday to Saturday. We reply by email to confirm, and you pay when you pick up.</p>
         <dl class="hours">
           <dt>Tuesday to Friday</dt><dd>8:00 am to 6:30 pm</dd>
           <dt>Saturday</dt><dd>9:00 am to 4:00 pm</dd>
           <dt>Sunday and Monday</dt><dd>Closed</dd>
         </dl>
-        <p>[Street address]<br>[Phone number]</p>
       </div>
-      <form class="bk" id="bookForm" novalidate>
-        <div class="f"><label for="bName">Name</label><input id="bName" name="name" autocomplete="name" required><span class="err" id="eName"></span></div>
-        <div class="f"><label for="bEmail">Email</label><input id="bEmail" name="email" type="email" autocomplete="email" required><span class="err" id="eEmail"></span></div>
+      <form class="bk" data-booking-form data-endpoint="" novalidate>
+        <div class="f"><label for="bName">Name</label><input id="bName" name="name" autocomplete="name" required aria-describedby="eName"><span class="err" id="eName"></span></div>
+        <div class="f"><label for="bEmail">Email</label><input id="bEmail" name="email" type="email" autocomplete="email" inputmode="email" required aria-describedby="eEmail"><span class="err" id="eEmail"></span></div>
         <div class="f"><label for="bService">Service</label>
           <select id="bService" name="service">
             <option>Safety check, $65</option>
@@ -282,24 +178,25 @@ footer{margin-top:clamp(72px,10vw,128px);background:var(--frame);color:var(--on-
             <option>Overhaul, $295</option>
             <option>Custom wheel build</option>
           </select></div>
-        <div class="f"><label for="bDate">Drop-off day</label><input id="bDate" name="date" type="date" required><span class="err" id="eDate"></span></div>
-        <div class="f full"><label for="bBike">Your bike</label><input id="bBike" name="bike" placeholder="2021 steel gravel bike, 11-speed"></div>
-        <div class="f full"><label for="bNotes">What needs fixing?</label><textarea id="bNotes" name="notes" placeholder="Creaks when I climb. Rear wheel rubs the brake."></textarea></div>
+        <div class="f"><label for="bDate">Drop-off day</label><input id="bDate" name="date" type="date" required aria-describedby="eDate"><span class="err" id="eDate"></span></div>
+        <div class="f full"><label for="bBike">Your bike <span class="opt-hint">(optional)</span></label><input id="bBike" name="bike" autocomplete="off" placeholder="2021 steel gravel bike, 11-speed"></div>
+        <div class="f full"><label for="bNotes">What needs fixing? <span class="opt-hint">(optional)</span></label><textarea id="bNotes" name="notes" placeholder="Creaks when I climb. Rear wheel rubs the brake."></textarea></div>
+        <div class="form-status" data-form-status role="status" aria-live="polite" hidden></div>
         <div class="fend">
-          <small>This form isn't connected to an inbox yet, so requests aren't sent.</small>
+          <small>We only use these details to arrange your drop-off.</small>
           <button class="btn btn-brass" type="submit">Request drop-off</button>
         </div>
-        <div class="done" id="done" hidden><b>Drop-off requested</b><span id="doneText"></span></div>
       </form>
     </div>
   </div>
 
-  <section id="faq">
+  <section id="faq" aria-labelledby="faq-title">
     <div class="wrap">
-      <div class="intro"><h2>Questions</h2></div>
+      <div class="intro"><h2 id="faq-title">Questions</h2></div>
       <div class="faq">
         <details open><summary>Why hand-built instead of factory wheels?</summary><p>Machines tension factory wheels to a range. We bring every spoke to the same tension and stress-relieve them, so the wheel stays straight longer. You also pick the rim, hub and spoke count for your weight and riding.</p></details>
         <details><summary>How do I know what my bike needs?</summary><p>Book a safety check. If it needs more, we send a written quote, and the $65 comes off any bigger service you approve.</p></details>
+        <details><summary>Can I bring my own parts for a wheel build?</summary><p>Yes. Bring the rims and hubs with your drop-off and we quote the build labour and spokes. We check the parts before we start.</p></details>
         <details><summary>Do you work on e-bikes?</summary><p>Yes, for mechanical work, brakes and wheels. We don't service motors or batteries.</p></details>
         <details><summary>What does the free re-true cover?</summary><p>Every wheel we build gets free truing and tension checks for 12 months. Crash damage and bent rims are quoted separately.</p></details>
       </div>
@@ -311,141 +208,15 @@ footer{margin-top:clamp(72px,10vw,128px);background:var(--frame);color:var(--on-
   <div class="wrap">
     <div class="fgrid">
       <a class="mark" href="#top">TRUEWHEEL</a>
-      <p>Sample site. The address, phone number and reviews are placeholders until real details are added.</p>
+      <p>Sample business site: the name, prices and hours are illustrative. &copy; <span data-year>2026</span> Truewheel Workshop.</p>
     </div>
     <div class="fword" aria-hidden="true">Built true</div>
   </div>
 </footer>
 
-<script>
-(() => {
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-  const size = cv => { const d = devicePixelRatio || 1, s = cv.getBoundingClientRect().width || 300; cv.width = Math.round(s*d); cv.height = Math.round(s*d); const x = cv.getContext('2d'); x.setTransform(d,0,0,d,0,0); return [x, s]; };
-
-  // ---------- hero: spoke tension chart ----------
-  const N = 32, tc = document.getElementById('tension');
-  let from = [], to = [], cur = [], t0 = 0, dur = 1600;
-  const rough = () => Array.from({ length: N }, (_, i) => 1 + (Math.sin(i * 1.7) * .14 + (Math.random() - .5) * .3));
-  const even = () => Array.from({ length: N }, () => 1 + (Math.random() - .5) * .05);
-  const spread = a => Math.round((Math.max(...a) - Math.min(...a)) / 2 * 100);
-  const ease = k => 1 - Math.pow(1 - k, 3);
-  function drawChart(vals) {
-    const [x, s] = size(tc), c = s / 2, R = c * .62;
-    const onF = css('--on-frame'), brass = css('--brass');
-    x.clearRect(0, 0, s, s);
-    // rim and hub
-    x.strokeStyle = onF; x.globalAlpha = .9; x.lineWidth = Math.max(6, s * .028);
-    x.beginPath(); x.arc(c, c, c * .93, 0, Math.PI * 2); x.stroke();
-    x.lineWidth = 1.5; x.globalAlpha = .5;
-    x.beginPath(); x.arc(c, c, c * .86, 0, Math.PI * 2); x.stroke();
-    x.globalAlpha = 1; x.fillStyle = onF; x.beginPath(); x.arc(c, c, c * .07, 0, Math.PI * 2); x.fill();
-    // spokes as tension bars
-    for (let i = 0; i < N; i++) {
-      const a = -Math.PI / 2 + i * Math.PI * 2 / N, r = R * vals[i];
-      x.strokeStyle = onF; x.globalAlpha = .35; x.lineWidth = 1;
-      x.beginPath(); x.moveTo(c + Math.cos(a) * c * .07, c + Math.sin(a) * c * .07); x.lineTo(c + Math.cos(a) * c * .86, c + Math.sin(a) * c * .86); x.stroke();
-      x.globalAlpha = 1; x.fillStyle = brass;
-      x.beginPath(); x.arc(c + Math.cos(a) * r, c + Math.sin(a) * r, Math.max(3, s * .009), 0, Math.PI * 2); x.fill();
-    }
-    // target ring
-    x.setLineDash([4, 6]); x.strokeStyle = onF; x.globalAlpha = .7; x.lineWidth = 1.2;
-    x.beginPath(); x.arc(c, c, R, 0, Math.PI * 2); x.stroke(); x.setLineDash([]); x.globalAlpha = 1;
-    // tension outline
-    x.strokeStyle = brass; x.lineWidth = Math.max(2, s * .006); x.lineJoin = 'round';
-    x.beginPath();
-    for (let i = 0; i <= N; i++) { const k = i % N, a = -Math.PI / 2 + k * Math.PI * 2 / N, r = R * vals[k]; i ? x.lineTo(c + Math.cos(a) * r, c + Math.sin(a) * r) : x.moveTo(c + Math.cos(a) * r, c + Math.sin(a) * r); }
-    x.stroke();
-    x.fillStyle = brass; x.globalAlpha = .12; x.fill(); x.globalAlpha = 1;
-  }
-  const num = document.getElementById('spreadNum'), txt = document.getElementById('spreadText');
-  function frame(t) {
-    const k = Math.min(1, (t - t0) / dur), e = ease(k);
-    cur = from.map((v, i) => v + (to[i] - v) * e);
-    drawChart(cur);
-    num.textContent = spread(cur) + '%';
-    if (k < 1) requestAnimationFrame(frame); else txt.textContent = 'tension spread after truing';
-  }
-  function trueIt(delay) {
-    from = rough(); to = even(); cur = from.slice();
-    drawChart(cur); num.textContent = spread(from) + '%'; txt.textContent = 'tension spread before truing';
-    if (reduce) { cur = to; drawChart(cur); num.textContent = spread(to) + '%'; txt.textContent = 'tension spread after truing'; return; }
-    setTimeout(() => { t0 = performance.now(); requestAnimationFrame(frame); }, delay);
-  }
-  trueIt(700);
-  document.getElementById('knock').addEventListener('click', () => trueIt(450));
-
-  // ---------- configurator ----------
-  function drawWheel(cv, spokes) {
-    const [x, s] = size(cv), c = s / 2, ink = css('--ink'), soft = css('--soft'), brass = css('--brass');
-    x.clearRect(0, 0, s, s);
-    x.strokeStyle = ink; x.lineWidth = Math.max(5, s * .05); x.beginPath(); x.arc(c, c, c * .9, 0, Math.PI * 2); x.stroke();
-    x.lineWidth = 1.5; x.beginPath(); x.arc(c, c, c * .78, 0, Math.PI * 2); x.stroke();
-    const st = Math.PI * 2 / spokes, cr = spokes <= 24 ? 2 : 3;
-    for (let i = 0; i < spokes; i++) {
-      const ra = -Math.PI / 2 + i * st, dir = (Math.floor(i / 2) % 2) ? 1 : -1, ha = ra + dir * cr * st * 2;
-      x.strokeStyle = i % 2 ? soft : ink; x.lineWidth = 1;
-      x.beginPath(); x.moveTo(c + Math.cos(ha) * c * .1, c + Math.sin(ha) * c * .1); x.lineTo(c + Math.cos(ra) * c * .78, c + Math.sin(ra) * c * .78); x.stroke();
-    }
-    x.fillStyle = brass; x.beginPath(); x.arc(c, c, c * .1, 0, Math.PI * 2); x.fill();
-  }
-  const opts = {
-    size: [['700c', 'Road and gravel', 0], ['650b', 'Gravel and all-road', 0], ['29 inch', 'Mountain', 20]],
-    rim: [['Alloy', '470 g, tubeless', 180, 470], ['Carbon', '395 g, 30 mm deep', 620, 395], ['Carbon aero', '470 g, 45 mm deep', 780, 470]],
-    hub: [['Shimano 105', 'Easy to service', 90, 460, 0], ['DT Swiss 350', 'Star ratchet', 310, 380, 0], ['Chris King R45', 'Long-life bearings', 560, 410, 7]],
-    spokes: [['24', 'Lighter riders', 24], ['28', 'Most riders', 28], ['32', 'Heavier or loaded', 32]]
-  };
-  const state = { size: 0, rim: 0, hub: 1, spokes: 1 };
-  for (const g of Object.keys(opts)) {
-    const el = document.getElementById(g);
-    opts[g].forEach(([n, sub], i) => {
-      const d = document.createElement('div'), id = `${g}-${i}`;
-      d.innerHTML = `<input type="radio" name="${g}" id="${id}" value="${i}" ${state[g] === i ? 'checked' : ''}><label for="${id}">${n}<span>${sub}</span></label>`;
-      d.querySelector('input').addEventListener('change', () => { state[g] = i; update(); });
-      el.appendChild(d);
-    });
-  }
-  const bw = document.getElementById('buildWheel'), money = n => '$' + n.toLocaleString('en-US');
-  function update() {
-    const z = opts.size[state.size], r = opts.rim[state.rim], h = opts.hub[state.hub], sp = opts.spokes[state.spokes];
-    const n = sp[2] * 2, sc = Math.round(n * 3.1), lab = 140, total = r[2] * 2 + h[2] + sc + lab + z[2], w = r[3] * 2 + h[3] + n * 5.6;
-    document.getElementById('specRows').innerHTML = [
-      ['Two rims', `${r[0]}, ${z[0]}`, money(r[2] * 2)], ['Hubs', h[0], money(h[2])], ['Spokes', `${n} Sapim Race`, money(sc)],
-      ['Build labour', 'Tension-mapped', money(lab + z[2])], ['Weight', 'Pair, estimated', `${Math.round(w).toLocaleString('en-US')} g`]
-    ].map(([k, v, p]) => `<div><dt>${k}</dt><dd>${v}: ${p}</dd></div>`).join('');
-    document.getElementById('total').textContent = money(total);
-    document.getElementById('lead').textContent = `Ready in ${7 + h[4]} to ${10 + h[4]} days`;
-    drawWheel(bw, sp[2]);
-  }
-  update();
-  document.getElementById('bookBuild').addEventListener('click', () => {
-    document.getElementById('bService').value = 'Custom wheel build';
-    document.getElementById('bNotes').value = `Wheelset: ${opts.size[state.size][0]} ${opts.rim[state.rim][0]} rims, ${opts.hub[state.hub][0]} hubs, ${opts.spokes[state.spokes][0]} spokes. Estimate ${document.getElementById('total').textContent}.`;
-  });
-  const redraw = () => { drawChart(cur.length ? cur : even()); update(); };
-  let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(redraw, 120); });
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', redraw);
-  new MutationObserver(redraw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-
-  // ---------- booking ----------
-  const f = document.getElementById('bookForm'), date = document.getElementById('bDate');
-  const t = new Date(); t.setMinutes(t.getMinutes() - t.getTimezoneOffset()); date.min = t.toISOString().slice(0, 10);
-  f.addEventListener('submit', e => {
-    e.preventDefault();
-    const el = f.elements, name = el.name.value.trim(), email = el.email.value.trim(), d = date.value;
-    let ok = true;
-    const set = (id, inp, m) => { document.getElementById(id).textContent = m; inp.setAttribute('aria-invalid', m ? 'true' : 'false'); if (m) ok = false; };
-    set('eName', el.name, name ? '' : 'Add your name so we know who to expect.');
-    set('eEmail', el.email, /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? '' : 'Enter an email address, like you@example.com.');
-    let m = ''; if (!d) m = 'Choose a drop-off day.'; else { const wd = new Date(d + 'T12:00').getDay(); if (wd === 0 || wd === 1) m = "We're closed Sunday and Monday. Choose Tuesday to Saturday."; }
-    set('eDate', date, m);
-    if (!ok) return;
-    const nice = new Date(d + 'T12:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
-    document.getElementById('doneText').textContent = `${name}, ${el.service.value.split(',')[0].toLowerCase()} on ${nice}. This sample form has no inbox yet, so nothing was sent.`;
-    document.getElementById('done').hidden = false;
-  });
-})();
-</script>
-
+<div class="mobile-book" aria-label="Quick booking">
+  <span>Tune-ups from $65</span>
+  <a class="btn btn-brass" href="#book">Book a service</a>
+</div>
 </body>
 </html>

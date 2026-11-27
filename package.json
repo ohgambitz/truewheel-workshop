@@ -1,0 +1,13 @@
+{
+  "name": "truewheel-workshop",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "node tests/functional.mjs && node tests/visual.mjs"
+  },
+  "devDependencies": {
+    "typescript": "5.8.3"
+  }
+}

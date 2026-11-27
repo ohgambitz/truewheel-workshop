@@ -79,3 +79,21 @@ Git checkpoint first; Playwright at 320, 390, 768, 1024, 1440 and 1920 px; every
 - Rapha identity and editorial: [It's Nice That on Six and Frost's 2026 Rapha type system](https://www.itsnicethat.com/articles/six-frost-rapha-branding-project-250626), [D&AD on Mondial](https://www.dandad.org/work/d-ad-awards-archive/mondial)
 - Canyon configurator: [Cycling Weekly on MyCanyon](https://cyclingweekly.com/products/canyon-offers-hand-painted-frames-and-custom-builds-with-the-launch-of-its-mycanyon-personalisation-service), [BikeRadar on MyCanyon](https://www.bikeradar.com/news/mycanyon-bike-customisation)
 - Apple product-page storytelling: [UX Collective, autopsy of an Apple webpage](https://uxdesign.cc/autopsy-of-an-apple-webpage-cbfebed98b6c), [Baymard on Apple's mobile product page](https://baymard.com/ecommerce-design-examples/41-product-page/26249-apple)
+
+## After the redesign (2026-11-27)
+These are my own scores against the same rubric as the audit. They are not an independent review. The evidence is in `docs/production-readiness.md`.
+
+| Area | Before | After | What moved it |
+|---|---|---|---|
+| Brand and identity | 6 | 8 | The Truing Stand system: workshop green chapters, brass only for measured values and actions |
+| Typography | 7 | 8 | A larger display scale, mono for measurements only, and values that never wrap |
+| Composition | 5 | 8 | 12-column asymmetric layout, hairline rules, and one idea per screen on phones |
+| Imagery | 4 | 7 to 7.5 | Studio renders on light sweeps, plus macros and 18 configurator variants. They are still renders, so real photography is the next step |
+| Storytelling | 5 | 8 | The craft chapter walks through five tolerances; the build card shows what customers receive |
+| Configurator | 5 | 9 | Live preview, per-option differences, an odometer total and a mobile total bar |
+| Pricing | 7 | 8.5 | A price board with includes lists and turnaround |
+| Booking | 6 | 8.5 | Service tiles, one-tap days and a live summary, with every state kept |
+| Mobile | 6 | 8.5 | Every section reviewed at 320 and 390 px, with sticky bars only where useful |
+| Micro-interactions | 5 | 8 | The detent, key-press and odometer effects, all off with reduced motion |
+| Accessibility and performance | 10 | 10 | Kept at Lighthouse mobile 97/100/100/100 and desktop 100/100/100/100, with CLS 0 |
+| Overall | 6.2 | About 8.4 | The remaining gap to leaders is mainly real photography and real proof (reviews, business details) |

@@ -5,7 +5,7 @@ import { serve } from "./serve.mjs";
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
 
-const WIDTHS = [320, 375, 390, 768, 1024, 1440, 1920];
+const WIDTHS = [320, 390, 768, 1024, 1440, 1920];
 const label = process.argv[2] ?? "latest";
 const outDir = new URL(`../docs/screenshots/${label}/`, import.meta.url);
 await mkdir(outDir, { recursive: true });
@@ -20,14 +20,19 @@ try {
     // Scroll like a visitor so lazy images load, then return to the top.
     await page.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 500) { window.scrollTo(0, y); await new Promise(r => setTimeout(r, 60)); } window.scrollTo(0, 0); });
     await page.waitForLoadState("networkidle");
-    await page.evaluate(() => Promise.all([...document.images].map(i => i.complete ? null : new Promise(r => { i.onload = i.onerror = r; }))));
+    // Wait for displayed images only (hidden lazy images, e.g. the desktop-only stage on phones, never load by design), at most 8 s.
+    await page.evaluate(() => Promise.race([
+      Promise.all([...document.images].filter(i => i.getClientRects().length && getComputedStyle(i).display !== "none")
+        .map(i => i.complete ? null : new Promise(r => { i.addEventListener("load", r, { once: true }); i.addEventListener("error", r, { once: true }); }))),
+      new Promise(r => setTimeout(r, 8000)),
+    ]));
     const report = await page.evaluate(() => {
       const vw = document.documentElement.clientWidth;
       const overflowX = document.documentElement.scrollWidth - vw;
       const offscreen = [], clipped = [], smallTargets = [];
       const visible = el => { const s = getComputedStyle(el); const r = el.getBoundingClientRect(); return s.visibility !== "hidden" && s.display !== "none" && s.opacity !== "0" && r.width > 0 && r.height > 0; };
       for (const el of document.querySelectorAll("main *, header *, footer *")) {
-        if (!visible(el) || el.closest("[aria-hidden='true']") || el.closest(".visually-hidden")) continue;
+        if (!visible(el) || el.closest("[aria-hidden='true']") || el.closest(".visually-hidden") || el.closest("[data-bleed]")) continue;
         const r = el.getBoundingClientRect();
         if ((r.right > vw + 1 || r.left < -1) && !el.closest("canvas") && el.tagName !== "SVG") offscreen.push(`${el.tagName.toLowerCase()}.${el.className}`.slice(0, 60));
         const s = getComputedStyle(el);

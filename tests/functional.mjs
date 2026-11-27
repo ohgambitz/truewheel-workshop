@@ -44,17 +44,50 @@ try {
   const spread = await page.textContent("[data-spread-value]");
   check("tension chart re-trues after a knock", before.includes("before") && parseInt(spread) <= 3, `${before} -> ${spread}`);
 
-  // Configurator maths
-  const total = () => page.textContent("[data-quote-total]");
+  // Header state
+  check("header is transparent over the hero at the top", (await page.getAttribute("[data-site-header]", "data-over")) === "true");
+
+  // Craft chapter: pinned stage follows the active step
+  await page.evaluate(() => document.querySelectorAll("[data-step]")[2].scrollIntoView({ block: "center", behavior: "instant" }));
+  await page.waitForTimeout(700);
+  const readout = await page.textContent("[data-stage-readout]");
+  const frame = await page.getAttribute(".stage-frame.is-active", "data-stage-frame");
+  check("craft stage shows the step in view", readout === "0.3 mm or less" && frame === "rim", `${readout}, ${frame}`);
+  check("header turns solid after the hero", (await page.getAttribute("[data-site-header]", "data-over")) === "false");
+
+  // Configurator maths, deltas, preview
+  const total = () => page.getAttribute("[data-quote-total]", "data-value");
   check("default wheelset estimate is $984", (await total()) === "$984", await total());
+  const carbonDelta = await page.textContent("label[for='opt-rim-carbon'] .opt-delta");
+  check("each option shows its price and weight difference", carbonDelta.includes("+$880") && carbonDelta.includes("150 g"), carbonDelta);
   await page.click("label[for='opt-rim-carbon']");
   check("choosing Carbon rims gives $1,864", (await total()) === "$1,864", await total());
+  await page.waitForFunction(() => document.querySelector("[data-preview] img.is-front")?.currentSrc.includes("carbon-28"), null, { timeout: 5000 }).catch(() => {});
+  const front = await page.$eval("[data-preview] img.is-front", i => i.currentSrc);
+  check("the preview switches to the carbon render", front.includes("wheel-carbon-28"), front.split("/").pop());
+  await page.click("label[for='opt-spokes-32']");
+  await page.waitForFunction(() => document.querySelector("[data-preview] img.is-front")?.currentSrc.includes("carbon-32"), null, { timeout: 5000 }).catch(() => {});
+  check("the preview follows the spoke count", (await page.$eval("[data-preview] img.is-front", i => i.currentSrc)).includes("wheel-carbon-32"));
   await page.click("label[for='opt-hub-ck-r45']");
   const lead = await page.textContent("[data-quote-lead]");
   check("Chris King hubs add a week to lead time", lead === "Ready in 14 to 17 days", lead);
+  const missingRenders = [];
+  for (const rim of ["alloy", "carbon", "carbon-aero"]) for (const n of [24, 28, 32]) for (const w of [600, 1100]) {
+    const r = await page.request.get(`${URL_}assets/img/studio/wheel-${rim}-${n}-${w}.webp`); if (r.status() !== 200) missingRenders.push(`${rim}-${n}-${w}`);
+  }
+  check("all 18 configurator render files exist", missingRenders.length === 0, missingRenders.join(", "));
   await page.click("[data-book-build]");
-  const svc = await page.inputValue("#bService"), notes = await page.inputValue("#bNotes");
-  check("Book this build prefills the form", svc === "Custom wheel build" && notes.includes("Carbon rims") && notes.includes("Chris King"), notes);
+  const svcChecked = await page.isChecked("#svc-build"), notes = await page.inputValue("#bNotes");
+  check("Book this build prefills the form", svcChecked && notes.includes("Carbon rims") && notes.includes("Chris King"), notes);
+
+  // Booking: day chips and summary
+  const chipCount = await page.$$eval("[data-date-chips] .day", c => c.length);
+  await page.click("[data-date-chips] .day >> nth=1");
+  const chipDate = await page.getAttribute("[data-date-chips] .day >> nth=1", "data-date");
+  const pressed = await page.getAttribute("[data-date-chips] .day >> nth=1", "aria-pressed");
+  const summary = await page.textContent("[data-booking-summary]");
+  check("day chips fill the date and the summary updates", chipCount === 6 && (await page.inputValue("#bDate")) === chipDate && pressed === "true" && summary.includes("Custom wheel build") && summary.includes("drop-off"), summary);
+  await page.fill("#bDate", "");
 
   // Booking form: validation and not-connected state
   await page.fill("#bName", ""); await page.fill("#bEmail", "nope");
@@ -100,9 +133,13 @@ try {
   const escClosed = await m.isHidden("#site-menu");
   check("mobile menu opens, closes on link and on Escape", hiddenBefore && shown && exp === "true" && closed && escClosed);
   const hiddenTop = await m.getAttribute(".mobile-book", "data-hidden");
-  await m.evaluate(() => document.getElementById("builder").scrollIntoView()); await m.waitForTimeout(400);
+  await m.evaluate(() => document.getElementById("services").scrollIntoView({ behavior: "instant" })); await m.waitForTimeout(500);
   const shownMid = await m.getAttribute(".mobile-book", "data-hidden");
   check("mobile booking bar hides over the hero and shows mid-page", hiddenTop === "true" && shownMid === "false", `${hiddenTop} -> ${shownMid}`);
+  await m.evaluate(() => document.querySelector(".build-steps fieldset:nth-of-type(2)").scrollIntoView({ behavior: "instant" })); await m.waitForTimeout(600);
+  const barVisible = await m.isVisible(".build-bar"), barTotal = await m.getAttribute(".build-bar [data-quote-total]", "data-value");
+  const bookBar = await m.getAttribute(".mobile-book", "data-hidden");
+  check("in the builder, phones get a sticky total bar instead", barVisible && barTotal === "$984" && bookBar === "true", `${barVisible}, ${barTotal}, ${bookBar}`);
   await m.close();
 } finally {
   await browser.close(); server.close();

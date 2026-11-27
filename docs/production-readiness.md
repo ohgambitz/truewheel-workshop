@@ -1,60 +1,93 @@
 # Production readiness report
 
-Date: 2026-11-27. Scope: the Truewheel Workshop website in this repository. Checkpoint before the rebuild: git tag `checkpoint-before-premium`.
+Date: 2026-11-27. Scope: the Truing Stand redesign of the Truewheel Workshop website.
+
+**Checkpoints:**
+- `checkpoint-before-truing-stand` (commit a3e0a3b, the audit before this redesign).
+- `checkpoint-before-premium` (the earlier rebuild).
+
+Both tags are local only, because pushing tags to GitHub failed from this environment. The commits themselves are on GitHub.
 
 ## Verdict
-**Technically ready; not yet ready for real customers.** Code, layout, accessibility, performance and security checks all pass with evidence below. Three business inputs are missing, and the site says so instead of faking them (see Blockers).
+**Technically ready; not yet ready for real customers.** Function, layout, accessibility, performance and security checks pass, with evidence below. Three business inputs are still missing, and the site says so instead of faking them (see Blockers).
 
-## Stage evidence
-| Stage | Status | Evidence |
-|---|---|---|
-| 1. Research and planning | Done | `docs/research.md`: audience, sourced customer-priority findings, competitor pattern scan |
-| 2. Design direction | Done | `docs/design-direction.md` |
-| 3. Design system | Done | `docs/design-system.md`: colour, type, spacing, radius, component and state tokens |
-| 4. High-fidelity design | Done | Rendered product images (assembled and exploded wheel) in `assets/img`; screenshots in `docs/screenshots/` |
-| 5. Implementation | Done | Static HTML + CSS + strict TypeScript modules (`src/` compiled to `assets/js/`); one dev dependency (TypeScript) |
-| 6. Functional testing | Pass, 17/17 | `node tests/functional.mjs` (output below) |
-| 7. Visual audit | Pass, 7/7 widths | `node tests/visual.mjs final`; screenshots in `docs/screenshots/final/`, plus a dark-mode capture |
-| 8. Performance and security | Pass | Lighthouse 100/100/100/100 mobile and desktop (`docs/lighthouse/`); CSP; secret scan clean |
-| 9. Final polish | Done | Fixes listed below |
-| 10. This report | Done | |
+## What changed in this redesign
+The audit and creative direction are in `docs/audit-2026-11/audit-and-direction.md`, and the design system is in `docs/design-system.md`.
+- **Hero:** studio wheel render with the live tension instrument layered on it.
+- **Craft chapter:** five tolerances shown in sequence, with a pinned stage on desktop.
+- **Price board:** service rows with an includes list, turnaround and price.
+- **Configurator:** a two-pane purchasing flow, with an option-by-option price, weight and lead-time difference, 18 rendered previews, an odometer total and a mobile total bar.
+- **Build card:** the process stages, laid out as the card customers receive.
+- **Booking:** service tiles, one-tap drop-off days and a live summary.
+- **Micro-interactions:** the detent, key-press and odometer effects, all respecting reduced motion.
+- **Other:** a new social sharing image, and removal of the eight renders the old design used.
 
-## Functional tests (17/17 pass)
-No console errors or CSP violations; no failed requests; no third-party requests; every in-page link has a target; first Tab reaches the skip link; tension chart re-trues; configurator default $984, Carbon rims $1,864, Chris King hubs add a week; "Book this build" prefills the form; empty submit shows three inline errors and focuses the first; Monday is rejected; with no endpoint the form states nothing was sent; with an endpoint returning 200 the form shows a loading state then success; with 500 it shows loading then a recoverable error; mobile menu opens and closes on link and Escape; mobile booking bar hides over the hero and appears mid-page.
+## Functional tests: 26/26 pass (`node tests/functional.mjs`)
+**Page health:**
+- No console errors, CSP violations, failed requests or third-party requests.
+- Every in-page link has a target, and the first Tab reaches the skip link.
+- The header switches between transparent and solid at the hero edge.
 
-## Visual audit
-Widths 320, 375, 390, 768, 1024, 1440, 1920: no horizontal overflow, no off-screen or clipped text, all mobile tap targets at least 44 px. Issues found by eye and fixed across three passes:
-- Product images rendered empty in captures (lazy loading); the audit now scrolls like a visitor.
-- "What most bikes need each season" tag wrapped awkwardly on phones; shortened.
-- Opening hours broke mid-time; times no longer wrap.
-- Mobile booking bar covered the hero chart and duplicated the booking form; it now appears only between them and is removed from tab order when hidden.
-- Selected configurator chips were hard to see in dark mode; selected chips now get a brass outline.
-- Footer wordmark failed contrast (1.43:1); raised to 3.3:1.
-- Header logo link was 28 px tall; now 44 px.
+**Tension chart and craft chapter:**
+- The chart re-trues after a knock.
+- The craft chapter shows the rim frame and "0.3 mm or less" for the rim step.
 
-## Lighthouse (final code, local static server)
+**Configurator:**
+- The default total is $984.
+- The Carbon option shows "+$880" and its weight difference, and choosing it gives $1,864.
+- The preview switches to the carbon render, then to the 32-spoke render.
+- Chris King hubs give "Ready in 14 to 17 days".
+- All 18 preview renders exist.
+- "Book this build" prefills the booking form.
+
+**Booking:**
+- The day chips set the date.
+- An empty submit shows inline errors, and Monday is rejected.
+- With no endpoint, the form says nothing was sent.
+- An endpoint returning 200 gives a loading state, then success.
+- An endpoint returning 500 gives a loading state, then a recoverable error.
+
+**Mobile:**
+- The menu opens, and closes on a link and on Escape.
+- The mobile booking bar hides over the hero.
+- The builder's sticky total bar shows the live total.
+
+## Visual audit: 6/6 widths pass (`node tests/visual.mjs final`)
+At 320, 390, 768, 1024, 1440 and 1920 px:
+- No horizontal overflow.
+- No off-screen or clipped text.
+- All phone tap targets are at least 44 px.
+
+Full-page screenshots are in `docs/screenshots/final/`, and each pass was also reviewed by eye.
+
+Fixes made during the passes:
+- Dimmed craft steps failed contrast. The active step is now marked with a brass rule instead of dimming the others.
+- The day chips' accessible names didn't match their visible text. The aria-label was removed.
+- The hero buttons wrapped differently before and after the web font loaded, causing a layout shift (CLS 0.097). Under 600 px they now stack, and CLS is 0.
+- LCP was 3.2 s on mobile. The hero image now decodes immediately, has an 800 px size, and scripts below the first screen wait for idle time. LCP is now 2.4 s.
+- The "Most booked" flag failed contrast at 2.8:1. It is now ink with a brass square.
+- At 320 px, the step thumbnails, build card rows and the "other day" field were tightened and stacked.
+
+## Lighthouse (final code, local static server; reports in `docs/lighthouse/final-*`)
 | Run | Performance | Accessibility | Best practices | SEO | FCP | LCP | TBT | CLS |
 |---|---|---|---|---|---|---|---|---|
-| Mobile | 100 | 100 | 100 | 100 | 1.4 s | 1.7 s | 0 ms | 0 |
-| Desktop | 100 | 100 | 100 | 100 | 0.4 s | 0.4 s | 0 ms | 0 |
-Total assets 424 KB: WebP images in four widths with `srcset`, self-hosted WOFF2 fonts (two preloaded), no frameworks.
+| Mobile | 97 | 100 | 100 | 100 | 1.6 s | 2.4 s | 0 ms | 0 |
+| Desktop | 100 | 100 | 100 | 100 | 0.4 s | 0.6 s | 0 ms | 0 |
+
+The mobile page weight is 477 KiB. Images load in responsive WebP sizes, and the 18 configurator variants load only when chosen.
 
 ## Security and privacy
-- Content-Security-Policy meta tag: scripts, styles, fonts and images from this site only; no inline scripts; `object-src 'none'`; `base-uri 'self'`.
-- No third-party requests (fonts self-hosted, no analytics or trackers).
-- No credentials in the repository (scan clean); the booking endpoint is a public URL set in `data-endpoint`, never a secret.
-- DOM built with `createElement`/`textContent`; no `innerHTML`, `eval` or `new Function`.
-- GitHub Pages serves HTTPS. It cannot set custom response headers, so HSTS and frame-ancestors rely on GitHub's defaults.
-
-## Accessibility
-Skip link, landmark structure, labelled form controls with `aria-describedby` errors and `aria-invalid`, live regions for the price, chart reading and form status, visible focus rings, 44 px targets, reduced-motion support (chart and transitions), contrast verified by Lighthouse.
+- **CSP:** a Content-Security-Policy meta tag allows scripts, styles, fonts and images from this site only. There are no inline scripts, `object-src` is `'none'`, and `base-uri` is `'self'`.
+- **Third parties:** none. Fonts are self-hosted, and there are no analytics or trackers.
+- **Credentials:** none in the repository. The booking endpoint is a public URL in `data-endpoint`, never a secret.
+- **DOM:** built with `createElement` and `textContent`. There is no `innerHTML`, `eval` or `new Function`.
 
 ## Blockers before real customers
-1. **Booking endpoint.** The form is built to POST JSON to the URL in `data-endpoint` on the form element (for example a Formspree form URL or your own API). Until one is set, it honestly tells visitors nothing was sent.
-2. **Real business details.** Name, prices, hours and turnaround are illustrative, and the footer says so. Address, phone number and email are not shown because none were supplied.
-3. **Real reviews.** The placeholder reviews section was removed; add genuine reviews when available.
+1. **Booking endpoint.** Set `data-endpoint` on the booking form to a URL that accepts JSON, such as a Formspree form or your own API. Until then, the form tells visitors honestly that nothing was sent.
+2. **Real business details.** The name, prices, hours and turnaround are illustrative, and the footer says so. No address, phone number or email is shown, because none was supplied.
+3. **Real reviews.** No testimonials are shown. Add genuine reviews when you have them.
 
 ## Known limitations
-- Browser testing ran in Chromium only (the environment has no Firefox or WebKit). The code uses widely supported features (CSS `color-mix`, `IntersectionObserver`, ES modules); `color-mix` needs Safari 16.2+ and Firefox 113+.
-- Product images are renders of a 3D model, labelled as such; real workshop photos would add trust.
-- Lighthouse ran against a local static server; GitHub Pages adds compression and its own cache headers.
+- **Imagery:** product images are renders of a 3D model, labelled as such. Real workshop and product photography is the biggest remaining improvement, and the layout is built to take it.
+- **Browsers:** testing ran in Chromium only. `color-mix` needs Safari 16.2+ and Firefox 113+.
+- **Hosting:** Lighthouse ran against a local static server. GitHub Pages adds compression and its own cache headers, and cannot set custom response headers.

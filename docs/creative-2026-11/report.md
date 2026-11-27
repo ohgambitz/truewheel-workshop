@@ -45,3 +45,17 @@
   | Phone | 93 / 100 / 100 / 100 | 1.8 s | 3.0 s | 10 ms | 0.006 | 2.2 MB |
 
   The total page weight includes the sequence frames, which load after first paint. Live results are below.
+- **Live site (GitHub Pages, compressed):** functional tests 34/34 against the deployed URL.
+
+  | Run | Speed / access / practices / SEO | First text | Main image | TBT | CLS | Weight |
+  |---|---|---|---|---|---|---|
+  | Live phone (3 runs) | 100 / 100 / 100 / 100 | 1.0 s | 1.4 to 1.5 s | 0 ms | 0 to 0.006 | about 2 MB |
+  | Live desktop | 100 / 100 / 100 / 100 | 0.3 s | 0.4 s | 0 ms | 0.006 | 3.3 MB |
+
+  Before this pass, the live phone weight was 430 KB. The increase is the scroll sequence, loaded after first paint.
+- **Before and after:** `compare-hero.jpg`.
+
+## Limits
+- **Frame density:** the sequence is 96 frames, so very slow scrolling on a large screen can show a slight step between frames. More frames would cost more weight.
+- **Imagery:** all imagery is 3D render, not photography, as stated in the footer.
+- **Browsers:** tested in Chromium only. The sequence uses canvas and CSS container units, which are supported in current Safari and Firefox but were not verified here.

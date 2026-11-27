@@ -17,3 +17,15 @@ if (builder) initConfigurator(builder, q => booking?.prefillBuild(q));
 
 const year = document.querySelector("[data-year]");
 if (year) year.textContent = String(new Date().getFullYear());
+
+// Hide the mobile booking bar while the hero, booking form or footer is on screen (each already has a booking action).
+const bar = document.querySelector<HTMLElement>("[data-mobile-book]");
+const targets = [document.querySelector(".hero"), document.getElementById("book"), document.querySelector("footer")].filter((t): t is HTMLElement => !!t);
+if (bar && targets.length && "IntersectionObserver" in window) {
+  const onScreen = new Set<Element>();
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => (e.isIntersecting ? onScreen.add(e.target) : onScreen.delete(e.target)));
+    bar.dataset.hidden = String(onScreen.size > 0);
+  });
+  targets.forEach(t => io.observe(t));
+}

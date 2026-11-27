@@ -16,3 +16,13 @@ if (builder)
 const year = document.querySelector("[data-year]");
 if (year)
     year.textContent = String(new Date().getFullYear());
+const bar = document.querySelector("[data-mobile-book]");
+const targets = [document.querySelector(".hero"), document.getElementById("book"), document.querySelector("footer")].filter((t) => !!t);
+if (bar && targets.length && "IntersectionObserver" in window) {
+    const onScreen = new Set();
+    const io = new IntersectionObserver(entries => {
+        entries.forEach(e => (e.isIntersecting ? onScreen.add(e.target) : onScreen.delete(e.target)));
+        bar.dataset.hidden = String(onScreen.size > 0);
+    });
+    targets.forEach(t => io.observe(t));
+}

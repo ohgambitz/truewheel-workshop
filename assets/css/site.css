@@ -49,7 +49,7 @@ a { color: inherit; }
 /* Header */
 .site-header { position: sticky; top: 0; z-index: 30; background: var(--frame); color: var(--on-frame); }
 .bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 68px; }
-.mark { display: flex; align-items: center; gap: 10px; font: 900 1.6rem/1 var(--display); letter-spacing: .02em; text-decoration: none; }
+.mark { display: flex; align-items: center; gap: 10px; min-height: 44px; font: 900 1.6rem/1 var(--display); letter-spacing: .02em; text-decoration: none; }
 .links { display: flex; gap: 28px; margin: 0; padding: 0; list-style: none; }
 .links a { text-decoration: none; opacity: .85; padding: 8px 0; }
 .links a:hover { opacity: 1; text-decoration: underline; text-underline-offset: 6px; text-decoration-color: var(--brass); }
@@ -132,6 +132,7 @@ legend { font-weight: 600; margin-bottom: 10px; padding: 0; }
 .opt label:hover { border-color: var(--soft); }
 .opt input:checked + label { border-color: var(--frame); background: var(--frame); color: var(--on-frame); }
 .opt input:checked + label .opt-note { color: var(--on-frame); opacity: .85; }
+@media (prefers-color-scheme: dark) { .opt input:checked + label { border-color: var(--brass); } }
 .opt input:focus-visible + label { outline: 3px solid var(--brass); outline-offset: 2px; }
 .quote { position: sticky; top: 92px; background: var(--surface); border-radius: 20px; padding: 28px; display: grid; gap: 20px; min-width: 0; border: 2px solid var(--mist); }
 .quote canvas { width: min(200px, 55%); aspect-ratio: 1; height: auto; display: block; margin: 0 auto; }
@@ -163,7 +164,7 @@ legend { font-weight: 600; margin-bottom: 10px; padding: 0; }
 .book-info p { opacity: .88; }
 .hours { display: grid; grid-template-columns: auto 1fr; gap: 6px 28px; margin: 0; font-variant-numeric: tabular-nums; }
 .hours dt { opacity: .8; }
-.hours dd { margin: 0; }
+.hours dd { margin: 0; white-space: nowrap; }
 form.bk { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; background: var(--surface); color: var(--ink); padding: clamp(20px, 3vw, 36px); border-radius: 24px; min-width: 0; }
 .f { display: grid; gap: 6px; min-width: 0; align-content: start; }
 .f.full { grid-column: 1 / -1; }
@@ -199,7 +200,7 @@ form.bk { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; background: 
 footer { margin-top: var(--section); background: var(--frame); color: var(--on-frame); padding-block: 48px calc(40px + env(safe-area-inset-bottom, 0px)); }
 .fgrid { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: end; }
 .fgrid p { opacity: .8; font-size: .9rem; max-width: 52ch; }
-.fword { font: 900 clamp(4rem, 17vw, 13rem)/.8 var(--display); text-transform: uppercase; margin-top: 28px; color: color-mix(in srgb, var(--on-frame) 14%, transparent); white-space: nowrap; }
+.fword { font: 900 clamp(4rem, 17vw, 13rem)/.8 var(--display); text-transform: uppercase; margin-top: 28px; color: color-mix(in srgb, var(--on-frame) 48%, var(--frame)); white-space: nowrap; }
 
 /* Mobile booking bar */
 .mobile-book { display: none; }
@@ -207,6 +208,8 @@ footer { margin-top: var(--section); background: var(--frame); color: var(--on-f
   .mobile-book { display: flex; position: fixed; z-index: 25; left: 0; right: 0; bottom: 0; gap: 10px; align-items: center; justify-content: space-between;
     padding: 10px var(--gr) calc(10px + env(safe-area-inset-bottom, 0px)) var(--gl); background: color-mix(in srgb, var(--frame) 96%, transparent);
     color: var(--on-frame); border-top: 1px solid color-mix(in srgb, var(--on-frame) 18%, transparent); }
+  .mobile-book { transition: transform 200ms var(--ease), visibility 0s linear 0s; }
+  .mobile-book[data-hidden="true"] { transform: translateY(110%); visibility: hidden; transition: transform 200ms var(--ease), visibility 0s linear 200ms; }
   .mobile-book span { font-size: .9rem; opacity: .9; }
   .mobile-book .btn { min-height: 46px; padding: 0 20px; }
   footer { padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px)); }
